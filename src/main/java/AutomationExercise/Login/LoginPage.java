@@ -7,7 +7,7 @@ import org.openqa.selenium.support.PageFactory;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 import org.testng.Assert;
-import massa.MassaExcel;
+import testData.ExcelTestData;
 
 
 import java.time.Duration;
@@ -16,17 +16,15 @@ public class LoginPage {
 
     private WebDriver driver;
     private WebDriverWait wait;
-    private MassaExcel massa;
-    private String ct;
+    private ExcelTestData testData;
 
-    public LoginPage(WebDriver driver, MassaExcel massa) {
+    public LoginPage(WebDriver driver, ExcelTestData massa) {
 
         this.driver = driver;
-        this.massa = massa;
+        this.testData = massa;
         this.wait = new WebDriverWait(driver, Duration.ofSeconds(10));
 
         PageFactory.initElements(driver, this);
-
 
     }
 
@@ -91,8 +89,8 @@ public class LoginPage {
     public void realizarLogin() {
         wait.until(ExpectedConditions.visibilityOf(cmpEmailLogin));
 
-        String email = massa.getStringOf("EMAIL");
-        String senha = massa.getStringOf("SENHA");
+        String email = testData.getStringOf("EMAIL");
+        String senha = testData.getStringOf("SENHA");
         System.out.println("[TEST] O EMAIL E SENHA DO TESTES: " + email);
         System.out.println("[TEST] A SENHA DO TESTES: " + senha);
 
@@ -105,12 +103,12 @@ public class LoginPage {
     public void realizarNovoCadastro() {
         wait.until(ExpectedConditions.visibilityOf(cmpNomeNovoLogin));
 
-        String email = massa.getStringOf("EMAIL");
-        String nome = massa.getStringOf("NOME");
+        String email = testData.getStringOf("EMAIL");
+        String nome = testData.getStringOf("NOME");
         System.out.println("[TEST] O EMAIL É: " + email);
         System.out.println("[TEST] O NOME É: " + nome);
 
-        cmpNomeNovoLogin.sendKeys(massa.getStringOf("NOME"));
+        cmpNomeNovoLogin.sendKeys(testData.getStringOf("NOME"));
         cmpEmailNovoLogin.sendKeys(email);
 
         btnRegitrar.click();

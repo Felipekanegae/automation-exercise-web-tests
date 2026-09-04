@@ -1,4 +1,4 @@
-package massa;
+package testData;
 
 import org.apache.poi.ss.usermodel.*;
 
@@ -7,7 +7,7 @@ import java.io.InputStream;
 import java.util.HashMap;
 import java.util.Map;
 
-public class MassaExcel {
+public class ExcelTestData {
 
     private final Map<String, String> dados = new HashMap<>();
 

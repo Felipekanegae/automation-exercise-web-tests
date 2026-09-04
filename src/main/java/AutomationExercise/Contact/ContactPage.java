@@ -1,12 +1,13 @@
 package AutomationExercise.Contact;
 
-import massa.MassaExcel;
+import testData.ExcelTestData;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.FindBy;
 import org.openqa.selenium.support.PageFactory;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
+import org.testng.Assert;
 
 import java.time.Duration;
 
@@ -14,62 +15,87 @@ public class ContactPage {
 
     private WebDriver driver;
     private WebDriverWait wait;
-    private MassaExcel massa;
-    private String ct;
+    private ExcelTestData testData;
 
-    public ContactPage(WebDriver driver, MassaExcel massa) {
+    public ContactPage(WebDriver driver, ExcelTestData testData) {
 
         this.driver = driver;
-        this.massa = massa;
+        this.testData = testData;
         this.wait = new WebDriverWait(driver, Duration.ofSeconds(10));
         PageFactory.initElements(driver, this);
 
     }
 
-    // ELEMENTOS
+    //===ELEMENTS===
 
     @FindBy(name = "name")
-    private WebElement cmpNomeContato;
+    private WebElement contactNameField;
 
     @FindBy(name = "email")
-    private WebElement cmpEmailContato;
+    private WebElement contactEmailField;
 
     @FindBy(name = "subject")
-    private WebElement cmpSubjectContato;
+    private WebElement contactSubjectField;
 
     @FindBy(name = "message")
-    private WebElement cmpMessageContato;
+    private WebElement contactMessageField;
 
     @FindBy(xpath = "//*[text()=\" Contact us\"]")
-    private WebElement btnContactUs;
+    private WebElement contactUsButton;
 
-    //===AÇÕES===
-    public void enviarMensagemContato(){
-        wait.until(ExpectedConditions.visibilityOf(btnContactUs));
-        btnContactUs.click();
-        preencherMensagemContato();
+    @FindBy(name = "submit")
+    private WebElement submitButton;
+
+    @FindBy(className = "alert-success")
+    private WebElement successMessage;
+
+    //===ACTIONS===
+    public void openContactUsPage(){
+        wait.until(ExpectedConditions.visibilityOf(contactUsButton));
+        contactUsButton.click();
+
     }
 
-    //===PREENCHIMENTO DE CAMPOS===
+    public void sendContactMessage(){
+        fillContactForm();
+        submitButton.click();
+        
+    }
 
-    private void preencherMensagemContato(){
-        wait.until(ExpectedConditions.visibilityOf(cmpEmailContato));
+    //===FORM FILLING===
 
-        String nome = massa.getStringOf("NOME");
-        String email = massa.getStringOf("EMAIL");
-        String assunto = massa.getStringOf("SUBJECT");
-        String mensagem = massa.getStringOf("MESSAGE");
+    private void fillContactForm(){
+        wait.until(ExpectedConditions.visibilityOf(contactEmailField));
 
-        System.out.println("[TEST] O NOME DO TESTE: " + nome);
-        System.out.println("[TEST] O EMAIL DO TESTE: " + email);
-        System.out.println("[TEST] O ASSUNTO DO TESTE: " + assunto);
-        System.out.println("[TEST] A MENSAGEM DO TESTE: " + mensagem);
+        String name = testData.getStringOf("NAME");
+        String email = testData.getStringOf("EMAIL");
+        String subject = testData.getStringOf("SUBJECT");
+        String message = testData.getStringOf("MESSAGE");
 
-        cmpNomeContato.sendKeys(nome);
-        cmpEmailContato.sendKeys(email);
-        cmpSubjectContato.sendKeys(assunto);
-        cmpMessageContato.sendKeys(mensagem);
+        System.out.println("[TEST] NAME: " + name);
+        System.out.println("[TEST] EMAIL: " + email);
+        System.out.println("[TEST] SUBJECT: " + subject);
+        System.out.println("[TEST] MESSAGE: " + message);
 
+        contactNameField.sendKeys(name);
+        contactEmailField.sendKeys(email);
+        contactSubjectField.sendKeys(subject);
+        contactMessageField.sendKeys(message);
+        
+    }
+
+    //===MESSAGES===
+
+    public void acceptAlertMessage(){
+        wait.until(ExpectedConditions.alertIsPresent());
+        driver.switchTo().alert().accept();
+    }
+
+    public void validateSuccessMessage(){
+        String message = successMessage.getText();
+
+        Assert.assertTrue(message.contains("Success! Your details have been submitted successfully."));
+        System.out.println("[TEST] " + message);
     }
 
 }

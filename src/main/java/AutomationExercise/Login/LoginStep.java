@@ -9,7 +9,7 @@ import io.cucumber.java.en.When;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
 import io.github.bonigarcia.wdm.WebDriverManager;
-import massa.MassaExcel;
+import testData.ExcelTestData;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -19,7 +19,7 @@ public class LoginStep {
     private static final Logger log = LoggerFactory.getLogger(LoginStep.class);
     private LoginPage login;
     private WebDriver driver;
-    private MassaExcel massa;
+    private ExcelTestData massa;
     private String ct;
 
     @Before
@@ -40,7 +40,7 @@ public class LoginStep {
         driver = new ChromeDriver();
         driver.manage().window().maximize();
 
-        massa = new MassaExcel();
+        massa = new ExcelTestData();
 
         massa.carregarMassa(
                 "src/test/resources/massa/Massa/automationExercise.xlsx",
