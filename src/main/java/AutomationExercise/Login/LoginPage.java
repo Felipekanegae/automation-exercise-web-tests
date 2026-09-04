@@ -15,6 +15,7 @@ import java.time.Duration;
 public class LoginPage {
 
     private WebDriver driver;
+    private WebDriverWait wait;
     private MassaExcel massa;
     private String ct;
 
@@ -22,6 +23,8 @@ public class LoginPage {
 
         this.driver = driver;
         this.massa = massa;
+        this.wait = new WebDriverWait(driver, Duration.ofSeconds(10));
+
         PageFactory.initElements(driver, this);
 
 
@@ -80,15 +83,12 @@ public class LoginPage {
     //===ACOES===
 
     public void acessarLogin() {
-        WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(10));
         wait.until(ExpectedConditions.visibilityOf(menuLogin));
-
         menuLogin.click();
 
     }
 
     public void realizarLogin() {
-        WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(10));
         wait.until(ExpectedConditions.visibilityOf(cmpEmailLogin));
 
         String email = massa.getStringOf("EMAIL");
@@ -103,8 +103,7 @@ public class LoginPage {
     }
 
     public void realizarNovoCadastro() {
-        WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(10));
-        wait.until(ExpectedConditions.visibilityOf(cmpEmailNovoLogin));
+        wait.until(ExpectedConditions.visibilityOf(cmpNomeNovoLogin));
 
         String email = massa.getStringOf("EMAIL");
         String nome = massa.getStringOf("NOME");
@@ -119,7 +118,6 @@ public class LoginPage {
     }
 
     public void validarLoginRealizado(){
-        WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(10));
         wait.until(ExpectedConditions.visibilityOf(lblLogged));
         wait.until(ExpectedConditions.visibilityOf(btnLogout));
 
@@ -128,14 +126,12 @@ public class LoginPage {
     }
 
     public void realizarLogout(){
-        WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(10));
         wait.until(ExpectedConditions.visibilityOf(btnLogout));
         btnLogout.click();
 
     }
 
     public void validarLogoutRealizado(){
-        WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(10));
         wait.until(ExpectedConditions.visibilityOf(cmpEmailLogin));
         wait.until(ExpectedConditions.visibilityOf(cmpPasswordLogin));
 
@@ -146,7 +142,6 @@ public class LoginPage {
     //===MENSAGENS==
 
     public void mensagemEmailSenhaInvalido(){
-        WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(10));
         wait.until(ExpectedConditions.visibilityOf(msgEmailInvalido));
         String msg = msgEmailInvalido.getText();
 
@@ -154,7 +149,6 @@ public class LoginPage {
 
     }
     public void mensagemEmailJaCadastrado(){
-        WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(10));
         wait.until(ExpectedConditions.visibilityOf(msgEmailCadastrado));
         String msg = msgEmailCadastrado.getText();
 

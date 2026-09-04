@@ -13,6 +13,7 @@ import java.time.Duration;
 public class ContactPage {
 
     private WebDriver driver;
+    private WebDriverWait wait;
     private MassaExcel massa;
     private String ct;
 
@@ -20,6 +21,7 @@ public class ContactPage {
 
         this.driver = driver;
         this.massa = massa;
+        this.wait = new WebDriverWait(driver, Duration.ofSeconds(10));
         PageFactory.initElements(driver, this);
 
     }
@@ -38,15 +40,12 @@ public class ContactPage {
     @FindBy(name = "message")
     private WebElement cmpMessageContato;
 
-
     @FindBy(xpath = "//*[text()=\" Contact us\"]")
     private WebElement btnContactUs;
 
     //===AÇÕES===
     public void enviarMensagemContato(){
-        WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(10));
         wait.until(ExpectedConditions.visibilityOf(btnContactUs));
-
         btnContactUs.click();
         preencherMensagemContato();
     }
@@ -54,8 +53,7 @@ public class ContactPage {
     //===PREENCHIMENTO DE CAMPOS===
 
     private void preencherMensagemContato(){
-        WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(10));
-        wait.until(ExpectedConditions.visibilityOf(cmpNomeContato));
+        wait.until(ExpectedConditions.visibilityOf(cmpEmailContato));
 
         String nome = massa.getStringOf("NOME");
         String email = massa.getStringOf("EMAIL");
