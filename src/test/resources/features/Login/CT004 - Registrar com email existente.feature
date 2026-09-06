@@ -2,8 +2,8 @@ Feature: Login
 
 
   @CT4
-  Scenario: Validar email ja registrado
+  Scenario: Validate email already used
 
-    Given que estou na pagina de registrar
-    When eu coloco infomacoes ja registradas
-    Then o sistema informa que as informacoes ja foram utilizadas
+    Given I am on the registration page
+    When I enter an email that is already registered
+    Then an error message should be displayed

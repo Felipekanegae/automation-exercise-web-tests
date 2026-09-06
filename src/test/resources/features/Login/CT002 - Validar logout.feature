@@ -2,8 +2,8 @@ Feature: Login
 
 
   @CT2
-  Scenario: Validar logout com sucesso
+  Scenario: Validate successful logout
 
-    Given que realizei o login
-    When eu realizo o logout
-    Then o logout é realizado com sucesso
+    Given I am logged in
+    When I log out
+    Then I should be logged out successfully

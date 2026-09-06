@@ -51,70 +51,69 @@ public class LoginStep {
         login = new LoginPage(driver, massa);
     }
 
-    @Given("que estou na pagina de login")
-    public void que_estou_na_pagina_de_login() {
-        login.acessarLogin();
+    @Given("I am on the login page")
+    public void i_am_on_the_login_page() {
+        login.openLoginPage();
+    }
+
+    @When("I enter a valid email and password")
+    public void i_enter_a_valid_email_and_password() {
+        login.login();
 
     }
 
-    @When("informo usuario e senha validos")
-    public void informo_usuario_e_senha_validos() {
-        login.realizarLogin();
+    @Then("the user should be logged in successfully")
+    public void the_user_should_be_logged_in_successfully() {
+        login.validateSuccessfulLogin();
 
     }
 
-    @Then("o sistema realiza login com sucesso")
-    public void o_sistema_realiza_login_com_sucesso() {
-        login.validarLoginRealizado();
+    @Given("I am logged in")
+    public void i_am_logged_in() {
+        login.openLoginPage();
 
     }
 
-    @Given("que realizei o login")
-    public void que_realizei_o_login() {
-        login.acessarLogin();
+    @When("I log out")
+    public void i_log_out() {
+        login.login();
+        login.validateSuccessfulLogin();
 
     }
 
-    @When("eu realizo o logout")
-    public void eu_realizo_o_logout() {
-        login.realizarLogin();
-        login.validarLoginRealizado();
-    }
-
-    @Then("o logout é realizado com sucesso")
-    public void o_logout_é_realizado_com_sucesso() {
-        login.realizarLogout();
-        login.validarLogoutRealizado();
+    @Then("I should be logged out successfully")
+    public void i_should_be_logged_out_successfully() {
+        login.logout();
+        login.validateSuccessfulLogout();
 
     }
 
-    @When("eu coloco infomacoes invalidas")
-    public void eu_coloco_infomacoes_invalidas() {
-        login.realizarLogin();
+    @When("I enter invalid credentials")
+    public void i_enter_invalid_credentials() {
+        login.login();
 
     }
 
-    @Then("o sistema informa que as informacoes estao incorretas")
-    public void o_sistema_informa_que_as_informacoes_estao_incorretas() {
-        login.mensagemEmailSenhaInvalido();
+    @Then("an authentication error message should be displayed")
+    public void an_authentication_error_message_should_be_displayed() {
+        login.validateInvalidCredentialsMessage();
 
     }
 
-    @Given("que estou na pagina de registrar")
-    public void que_estou_na_pagina_de_registrar() {
-        login.acessarLogin();
+    @Given("I am on the registration page")
+    public void i_am_on_the_registration_page() {
+        login.openLoginPage();
+
+    }
+    @When("I enter an email that is already registered")
+    public void i_enter_an_email_that_is_already_registered() {
+        login.registerNewUser();
 
     }
 
-    @When("eu coloco infomacoes ja registradas")
-    public void eu_coloco_infomacoes_ja_registradas() {
-        login.realizarNovoCadastro();
-
-    }
-
-    @Then("o sistema informa que as informacoes ja foram utilizadas")
-    public void o_sistema_informa_que_as_informacoes_ja_foram_utilizadas() {
-        login.mensagemEmailJaCadastrado();
+    @Then("an error message should be displayed")
+    public void an_error_message_should_be_displayed() {
+        login.validateEmailAlreadyRegisteredMessage();
 
     }
 

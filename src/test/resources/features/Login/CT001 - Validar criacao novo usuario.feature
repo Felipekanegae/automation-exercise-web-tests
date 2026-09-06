@@ -1,8 +1,8 @@
 Feature: Login
 
   @CT1
-  Scenario: Validar login com sucesso
+  Scenario: Login User with correct email and password
 
-    Given que estou na pagina de login
-    When informo usuario e senha validos
-    Then o sistema realiza login com sucesso
+    Given I am on the login page
+    When I enter a valid email and password
+    Then the user should be logged in successfully

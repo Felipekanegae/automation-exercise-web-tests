@@ -52,7 +52,7 @@ public class ContactStep {
 
         contact = new ContactPage(driver, massa);
     }
-    
+
     @Given("I am on the Contact Us page")
     public void i_am_on_the_contact_us_page() {
         contact.openContactUsPage();
@@ -66,6 +66,8 @@ public class ContactStep {
     public void the_message_is_sent_successfully() {
         contact.validateSuccessMessage();
     }
+
+
 
     @After
     public void finalizar() {

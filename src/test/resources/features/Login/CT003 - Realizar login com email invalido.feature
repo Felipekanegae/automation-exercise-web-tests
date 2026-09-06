@@ -2,8 +2,8 @@ Feature: Login
 
 
   @CT3
-  Scenario: Validar falha login
+  Scenario: Login with invalid credentials
 
-    Given que estou na pagina de login
-    When eu coloco infomacoes invalidas
-    Then o sistema informa que as informacoes estao incorretas
+    Given I am on the login page
+    When I enter invalid credentials
+    Then an authentication error message should be displayed

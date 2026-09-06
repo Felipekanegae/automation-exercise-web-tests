@@ -18,137 +18,134 @@ public class LoginPage {
     private WebDriverWait wait;
     private ExcelTestData testData;
 
-    public LoginPage(WebDriver driver, ExcelTestData massa) {
+    public LoginPage(WebDriver driver, ExcelTestData testData) {
 
         this.driver = driver;
-        this.testData = massa;
+        this.testData = testData;
         this.wait = new WebDriverWait(driver, Duration.ofSeconds(10));
 
         PageFactory.initElements(driver, this);
 
     }
 
-    // ELEMENTOS
-    @FindBy(xpath = "//*[text()=\" Signup / Login\"]")
-    private WebElement menuLogin;
+    // ===ELEMENTS===
+    
+    @FindBy(xpath = "//*[normalize-space(text())='Signup / Login']")
+    private WebElement signupLoginButton;
 
-    @FindBy(xpath = "/html/body/section/div/div/div[1]/div/form/input[2]")
-    private WebElement cmpEmailLogin;
+    @FindBy(css = "[data-qa='login-email']")
+    private WebElement loginEmailField;
 
-    @FindBy(name = "password")
-    private WebElement cmpPasswordLogin;
+    @FindBy(css = "[data-qa='login-password']")
+    private WebElement loginPasswordField;
 
-    @FindBy(name = "name")
-    private WebElement cmpNomeNovoLogin;
+    @FindBy(css = "[data-qa='signup-name']")
+    private WebElement signupNameField;
 
-    @FindBy(xpath = "/html/body/section/div/div/div[3]/div/form/input[3]")
-    private WebElement cmpEmailNovoLogin;
+    @FindBy(css = "[data-qa='signup-email']")
+    private WebElement signupEmailField;
 
-    @FindBy(name = "name")
-    private WebElement cmpNomeContato;
+    @FindBy(css = "[data-qa='login-button']")
+    private WebElement loginButton;
 
-    @FindBy(name = "email")
-    private WebElement cmpEmailContato;
+    @FindBy(xpath = "//*[normalize-space(text())='Logout']")
+    private WebElement logoutButton;
 
-    @FindBy(name = "subject")
-    private WebElement cmpSubjectContato;
+    @FindBy(css = "[data-qa='signup-button']")
+    private WebElement signupButton;
 
-    @FindBy(name = "message")
-    private WebElement cmpMessageContato;
+    @FindBy(xpath = "//*[contains(normalize-space(.), 'Logged in as')]")
+    private WebElement messageLogged;
 
-    @FindBy(xpath = "/html/body/section/div/div/div[1]/div/form/button")
-    private WebElement bntLogin;
+    @FindBy(xpath = "//*[text()=\"Your email or password is incorrect!\"]")
+    private WebElement invalidCredentialsMessage;
 
-    @FindBy(xpath = "/html/body/header/div/div/div/div[2]/div/ul/li[4]/a")
-    private WebElement btnLogout;
-
-    @FindBy(xpath = "/html/body/section/div/div/div[3]/div/form/button")
-    private WebElement btnRegitrar;
-
-    @FindBy(xpath = "//*[text()=\" Contact us\"]")
-    private WebElement btnContactUs;
-
-    @FindBy(xpath = "/html/body/header/div/div/div/div[2]/div/ul/li[10]/a")
-    private WebElement lblLogged;
-
-    @FindBy(xpath = "/html/body/section/div/div/div[1]/div/form/p")
-    private WebElement msgEmailInvalido;
-
-    @FindBy(xpath = "/html/body/section/div/div/div[3]/div/form/p")
-    private WebElement msgEmailCadastrado;
+    @FindBy(xpath = "//*[text()=\"Email Address already exist!\"]")
+    private WebElement emailAlreadyRegisteredMessage;
 
 
-    //===ACOES===
+    //===ACTIONS===
 
-    public void acessarLogin() {
-        wait.until(ExpectedConditions.visibilityOf(menuLogin));
-        menuLogin.click();
+    public void openLoginPage() {
+        wait.until(ExpectedConditions.visibilityOf(signupLoginButton));
+        signupLoginButton.click();
 
     }
 
-    public void realizarLogin() {
-        wait.until(ExpectedConditions.visibilityOf(cmpEmailLogin));
+    public void login() {
+        fillLoginForm();
+        loginButton.click();
+
+    }
+
+    public void logout(){
+        wait.until(ExpectedConditions.visibilityOf(logoutButton));
+        logoutButton.click();
+
+    }
+
+    public void registerNewUser() {
+        fillNewUserForm();
+        signupButton.click();
+
+    }
+
+    //===FORM FILLING===
+    private void fillLoginForm() {
+        wait.until(ExpectedConditions.visibilityOf(loginEmailField));
 
         String email = testData.getStringOf("EMAIL");
-        String senha = testData.getStringOf("SENHA");
-        System.out.println("[TEST] O EMAIL E SENHA DO TESTES: " + email);
-        System.out.println("[TEST] A SENHA DO TESTES: " + senha);
+        String password = testData.getStringOf("PASSWORD");
+        System.out.println("[TEST] EMAIL: " + email);
 
-        cmpEmailLogin.sendKeys(email);
-        cmpPasswordLogin.sendKeys(senha);
-        bntLogin.click();
+        loginEmailField.sendKeys(email);
+        loginPasswordField.sendKeys(password);
 
     }
 
-    public void realizarNovoCadastro() {
-        wait.until(ExpectedConditions.visibilityOf(cmpNomeNovoLogin));
+    private void fillNewUserForm() {
+        wait.until(ExpectedConditions.visibilityOf(signupNameField));
 
         String email = testData.getStringOf("EMAIL");
-        String nome = testData.getStringOf("NOME");
-        System.out.println("[TEST] O EMAIL É: " + email);
-        System.out.println("[TEST] O NOME É: " + nome);
+        String name = testData.getStringOf("NAME");
+        System.out.println("[TEST] EMAIL: " + email);
+        System.out.println("[TEST] NAME: " + name);
 
-        cmpNomeNovoLogin.sendKeys(testData.getStringOf("NOME"));
-        cmpEmailNovoLogin.sendKeys(email);
-
-        btnRegitrar.click();
+        signupNameField.sendKeys(name);
+        signupEmailField.sendKeys(email);
 
     }
 
-    public void validarLoginRealizado(){
-        wait.until(ExpectedConditions.visibilityOf(lblLogged));
-        wait.until(ExpectedConditions.visibilityOf(btnLogout));
 
-        System.out.println("[TEST] O LOGIN FOI REALIZADO COM SUCESSO!!!");
+    //===VALIDATIONS===
 
-    }
+    public void validateSuccessfulLogin(){
+        wait.until(ExpectedConditions.visibilityOf(messageLogged));
+        wait.until(ExpectedConditions.visibilityOf(logoutButton));
 
-    public void realizarLogout(){
-        wait.until(ExpectedConditions.visibilityOf(btnLogout));
-        btnLogout.click();
+        System.out.println("[TEST] SUCCESSFUL LOGIN!!!");
 
     }
 
-    public void validarLogoutRealizado(){
-        wait.until(ExpectedConditions.visibilityOf(cmpEmailLogin));
-        wait.until(ExpectedConditions.visibilityOf(cmpPasswordLogin));
+    public void validateSuccessfulLogout(){
+        wait.until(ExpectedConditions.visibilityOf(loginEmailField));
+        wait.until(ExpectedConditions.visibilityOf(loginPasswordField));
 
-        System.out.println("[TEST] LOGOUT FOI REALIZADO COM SUCESSO!!!");
+        System.out.println("[TEST] SUCCESSFUL LOGOUT!!!");
     }
 
+    public void validateInvalidCredentialsMessage(){
+        wait.until(ExpectedConditions.visibilityOf(invalidCredentialsMessage));
+        String msg = invalidCredentialsMessage.getText();
 
-    //===MENSAGENS==
-
-    public void mensagemEmailSenhaInvalido(){
-        wait.until(ExpectedConditions.visibilityOf(msgEmailInvalido));
-        String msg = msgEmailInvalido.getText();
-
+        Assert.assertTrue(msg.contains("Your email or password is incorrect!"));
         System.out.println("[TEST] " + msg);
 
     }
-    public void mensagemEmailJaCadastrado(){
-        wait.until(ExpectedConditions.visibilityOf(msgEmailCadastrado));
-        String msg = msgEmailCadastrado.getText();
+
+    public void validateEmailAlreadyRegisteredMessage(){
+        wait.until(ExpectedConditions.visibilityOf(emailAlreadyRegisteredMessage));
+        String msg = emailAlreadyRegisteredMessage.getText();
 
         Assert.assertTrue(msg.contains("Email Address already exist!"));
         System.out.println("[TEST] " + msg);
