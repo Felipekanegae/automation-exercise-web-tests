@@ -23,13 +23,12 @@ public class LoginPage {
         this.driver = driver;
         this.testData = testData;
         this.wait = new WebDriverWait(driver, Duration.ofSeconds(10));
-
         PageFactory.initElements(driver, this);
 
     }
 
     // ===ELEMENTS===
-    
+
     @FindBy(xpath = "//*[normalize-space(text())='Signup / Login']")
     private WebElement signupLoginButton;
 
