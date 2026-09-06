@@ -30,12 +30,32 @@ public class ProductsPage {
     @FindBy(xpath = "//*[normalize-space(text())='Products']")
     private WebElement productsButton;
 
-    @FindBy(xpath = "//a[contains(@href, '/Close/')]")
-    private WebElement dismissButton;
-
     @FindBy(xpath = "//a[contains(@href, '/product_details/')]")
     private List<WebElement> viewProductButtons;
 
+    @FindBy(xpath = "//*[contains(normalize-space(.), 'Add to cart')]")
+    private WebElement addCartButton;
+
+    @FindBy(className = "product-information")
+    private WebElement productInformation;
+
+    @FindBy(id = "quantity")
+    private WebElement quantityField;
+
+    @FindBy(id = "review")
+    private WebElement reviewField;
+
+    @FindBy(xpath = "//*[normalize-space(text())='Quantity:']")
+    private WebElement quantityLabel;
+
+    @FindBy(xpath = "//*[normalize-space(text())='Availability:']")
+    private WebElement availabilityLabel;
+
+    @FindBy(xpath = "//*[normalize-space(text())='Condition:']")
+    private WebElement conditionLabel;
+
+    @FindBy(xpath = "//*[normalize-space(text())='Brand:']")
+    private WebElement brandLabel;
 
     //===ACTIONS===
 
@@ -68,7 +88,7 @@ public class ProductsPage {
         }
     }
 
-    public void viewProductsDetails() {
+    public void viewProductDetails() {
         closeAdIfPresent();
         wait.until(ExpectedConditions.visibilityOfAllElements(viewProductButtons));
         WebElement product = viewProductButtons.get(0);
@@ -79,10 +99,22 @@ public class ProductsPage {
         product.click();
     }
 
-    //===FORM FILLING===
+    //===VALIDATION===
 
+    public void verifyProductDetails() {
+        wait.until(ExpectedConditions.visibilityOf(reviewField));
+        String quantity = quantityField.getAttribute("value");
 
-    //===MESSAGES===
+        Assert.assertTrue(productInformation.isDisplayed());
+        Assert.assertTrue(quantityLabel.isDisplayed());
+        Assert.assertTrue(quantityField.isDisplayed());
+        Assert.assertTrue(addCartButton.isDisplayed());
+        Assert.assertTrue(availabilityLabel.isDisplayed());
+        Assert.assertTrue(conditionLabel.isDisplayed());
+        Assert.assertTrue(brandLabel.isDisplayed());
 
+        System.out.println("[TEST] QUANTITY: " +  quantity);
+
+    }
 
 }

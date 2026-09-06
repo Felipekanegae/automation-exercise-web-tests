@@ -6,7 +6,6 @@ import io.cucumber.java.Scenario;
 import io.cucumber.java.en.Given;
 import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
-import io.cucumber.messages.types.Product;
 import io.github.bonigarcia.wdm.WebDriverManager;
 import testData.ExcelTestData;
 import org.openqa.selenium.WebDriver;
@@ -63,12 +62,13 @@ public class ProductsStep {
     @When("I select a product")
     public void i_select_a_product() {
         product.closeAdIfPresent();
-        product.viewProductsDetails();
+        product.viewProductDetails();
 
     }
 
     @Then("the product details should be displayed")
     public void the_product_details_should_be_displayed() {
+        product.verifyProductDetails();
 
     }
 
