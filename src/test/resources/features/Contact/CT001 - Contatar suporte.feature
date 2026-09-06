@@ -2,8 +2,8 @@ Feature: Login
 
 
   @CT1
-  Scenario: Validar contatar suporte
+  Scenario: Send a message through the Contact Us form
 
-    Given que estou na pagina de contatar o suporte
-    When eu preencho as informacoes
-    Then a mensagem e enviada com sucesso
+    Given I am on the Contact Us page
+    When I fill in the contact form
+    Then the message is sent successfully

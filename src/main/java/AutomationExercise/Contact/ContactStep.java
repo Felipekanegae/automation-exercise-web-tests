@@ -52,24 +52,19 @@ public class ContactStep {
 
         contact = new ContactPage(driver, massa);
     }
-
-    @Given("que estou na pagina de contatar o suporte")
-    public void que_estou_na_pagina_de_contatar_o_suporte() {
+    
+    @Given("I am on the Contact Us page")
+    public void i_am_on_the_contact_us_page() {
         contact.openContactUsPage();
-
     }
-
-    @When("eu preencho as informacoes")
-    public void eu_preencho_as_informacoes() {
+    @When("I fill in the contact form")
+    public void i_fill_in_the_contact_form() {
         contact.sendContactMessage();
         contact.acceptAlertMessage();
-
     }
-
-    @Then("a mensagem e enviada com sucesso")
-    public void a_mensagem_e_enviada_com_sucesso() {
+    @Then("the message is sent successfully")
+    public void the_message_is_sent_successfully() {
         contact.validateSuccessMessage();
-
     }
 
     @After
