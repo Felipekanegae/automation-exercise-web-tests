@@ -74,11 +74,23 @@ public class ProductsStep {
     @When("I enter a product name")
     public void i_enter_a_product_name() {
         product.searchProduct();
+
     }
 
     @Then("the product should be displayed")
     public void the_product_should_be_displayed() {
         product.verifySearchedProduct();
+
+    }
+
+    @When("I add products in cart")
+    public void i_add_products_in_cart() {
+
+    }
+
+    @Then("the products should be displayed in the cart")
+    public void the_products_should_be_displayed_in_the_cart() {
+        
     }
 
 
