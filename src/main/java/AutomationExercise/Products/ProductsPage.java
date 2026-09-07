@@ -22,22 +22,37 @@ public class ProductsPage {
         this.driver = driver;
         this.testData = testData;
         this.wait = new WebDriverWait(driver, Duration.ofSeconds(10));
-        PageFactory.initElements(driver, this);
 
+        PageFactory.initElements(driver, this);
     }
 
     //===ELEMENTS===
+
     @FindBy(xpath = "//*[normalize-space(text())='Products']")
     private WebElement productsButton;
 
     @FindBy(xpath = "//a[contains(@href, '/product_details/')]")
     private List<WebElement> viewProductButtons;
 
+    @FindBy(css = ".cart_description h4 a")
+    private List<WebElement> cartProductNames;
+
+    @FindBy(css = "a[href='/view_cart']")
+    private WebElement cartButton;
+
+    // Add to cart buttons from product cards
+    @FindBy(css = ".productinfo .add-to-cart")
+    private List<WebElement> addToCartButtons;
+
+    // Add to cart button from product details page
     @FindBy(xpath = "//*[contains(normalize-space(.), 'Add to cart')]")
-    private WebElement addCartButton;
+    private WebElement productDetailsAddToCartButton;
 
     @FindBy(id = "submit_search")
     private WebElement searchButton;
+
+    @FindBy(xpath = "//*[contains(normalize-space(.), 'Proceed To Checkout')]")
+    private WebElement checkoutButton;
 
     @FindBy(className = "product-information")
     private WebElement productInformation;
@@ -69,22 +84,23 @@ public class ProductsPage {
     //===ACTIONS===
 
     public void openProductsPage() {
+
         wait.until(ExpectedConditions.visibilityOf(productsButton));
         productsButton.click();
-
     }
 
     public void closeAdIfPresent() {
-
         try {
-            List<WebElement> adFrames = driver.findElements(By.cssSelector("iframe[title='Advertisement']"));
+            List<WebElement> adFrames =
+                    driver.findElements(By.cssSelector("iframe[title='Advertisement']"));
 
             for (WebElement frame : adFrames) {
 
                 driver.switchTo().defaultContent();
                 driver.switchTo().frame(frame);
 
-                List<WebElement> closeButtons = driver.findElements(By.id("dismiss-button"));
+                List<WebElement> closeButtons =
+                        driver.findElements(By.id("dismiss-button"));
 
                 if (!closeButtons.isEmpty()) {
                     closeButtons.get(0).click();
@@ -94,53 +110,115 @@ public class ProductsPage {
 
         } finally {
             driver.switchTo().defaultContent();
+
         }
     }
 
     public void viewProductDetails() {
         closeAdIfPresent();
         wait.until(ExpectedConditions.visibilityOfAllElements(viewProductButtons));
+
         WebElement product = viewProductButtons.get(0);
 
-        ((JavascriptExecutor) driver).executeScript("arguments[0].scrollIntoView({block: 'center'});", product);
+        ((JavascriptExecutor) driver).executeScript(
+                "arguments[0].scrollIntoView({block: 'center'});",
+                product);
 
         wait.until(ExpectedConditions.elementToBeClickable(product));
+
         product.click();
     }
 
-    public void searchProduct() {
-        fillProductName();
+    public void searchProduct(String productName) {
+
+        fillProductName(productName);
+
+        wait.until(ExpectedConditions.elementToBeClickable(searchButton));
         searchButton.click();
+    }
+
+    public void addProductToCart() {
+        closeAdIfPresent();
+        wait.until(ExpectedConditions.visibilityOfAllElements(addToCartButtons));
+
+        WebElement addToCartButton = addToCartButtons.get(0);
+
+        ((JavascriptExecutor) driver).executeScript(
+                "arguments[0].scrollIntoView({block: 'center'});", addToCartButton);
+
+        wait.until(ExpectedConditions.elementToBeClickable(addToCartButton));
+        addToCartButton.click();
     }
 
     //===FORM FILLING===
 
-    private void fillProductName() {
-        wait.until(ExpectedConditions.visibilityOf(searchProductField));
-        searchProductField.sendKeys(testData.getStringOf("PRODUCT"));
+    private void fillProductName(String productName) {
 
+        wait.until(ExpectedConditions.visibilityOf(searchProductField));
+
+        searchProductField.clear();
+        searchProductField.sendKeys(productName);
     }
 
-    //===VALIDATION===
+    //===VALIDATIONS===
 
     public void verifyProductDetails() {
+
         wait.until(ExpectedConditions.visibilityOf(reviewField));
+        wait.until(ExpectedConditions.visibilityOf(productDetailsAddToCartButton));
 
         Assert.assertTrue(productInformation.isDisplayed());
         Assert.assertTrue(quantityLabel.isDisplayed());
         Assert.assertTrue(quantityField.isDisplayed());
-        Assert.assertTrue(addCartButton.isDisplayed());
+        Assert.assertTrue(productDetailsAddToCartButton.isDisplayed());
         Assert.assertTrue(availabilityLabel.isDisplayed());
         Assert.assertTrue(conditionLabel.isDisplayed());
         Assert.assertTrue(brandLabel.isDisplayed());
-
     }
 
     public void verifySearchedProduct() {
         wait.until(ExpectedConditions.visibilityOf(searchedProductName));
+
         String productName = searchedProductName.getText();
 
-        Assert.assertTrue(productName.contains(testData.getStringOf("PRODUCT")));
+        Assert.assertTrue(
+                productName.contains(testData.getStringOf("PRODUCT_1")));
+
     }
 
+    public void verifyProductsInCart() {
+        wait.until(ExpectedConditions.elementToBeClickable(cartButton));
+        cartButton.click();
+        wait.until(ExpectedConditions.visibilityOfAllElements(cartProductNames));
+
+        String expectedProduct1 = testData.getStringOf("PRODUCT_1");
+        String expectedProduct2 = testData.getStringOf("PRODUCT_2");
+        String expectedProduct3 = testData.getStringOf("PRODUCT_3");
+
+        boolean product1Found = false;
+        boolean product2Found = false;
+        boolean product3Found = false;
+
+        for (WebElement product : cartProductNames) {
+
+            String productName = product.getText();
+
+            if (productName.contains(expectedProduct1)) {
+                product1Found = true;
+            }
+
+            if (productName.contains(expectedProduct2)) {
+                product2Found = true;
+            }
+
+            if (productName.contains(expectedProduct3)) {
+                product3Found = true;
+            }
+        }
+
+        Assert.assertTrue(product1Found, "Product not found: " + expectedProduct1);
+        Assert.assertTrue(product2Found, "Product not found: " + expectedProduct2);
+        Assert.assertTrue(product3Found, "Product not found: " + expectedProduct3);
+    }
 }
+

@@ -73,7 +73,7 @@ public class ProductsStep {
 
     @When("I enter a product name")
     public void i_enter_a_product_name() {
-        product.searchProduct();
+        product.searchProduct(testData.getStringOf("PRODUCT_1"));
 
     }
 
@@ -85,12 +85,19 @@ public class ProductsStep {
 
     @When("I add products in cart")
     public void i_add_products_in_cart() {
+        product.searchProduct(testData.getStringOf("PRODUCT_1"));
+        product.addProductToCart();
+        product.searchProduct(testData.getStringOf("PRODUCT_2"));
+        product.addProductToCart();
+        product.searchProduct(testData.getStringOf("PRODUCT_3"));
+        product.addProductToCart();
 
     }
 
     @Then("the products should be displayed in the cart")
     public void the_products_should_be_displayed_in_the_cart() {
-        
+        product.verifyProductsInCart();
+
     }
 
 
