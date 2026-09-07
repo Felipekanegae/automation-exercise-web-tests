@@ -63,6 +63,9 @@ public class ProductsPage {
     @FindBy(xpath = "//*[normalize-space(text())='Brand:']")
     private WebElement brandLabel;
 
+    @FindBy(css = ".productinfo.text-center p")
+    private WebElement searchedProductName;
+
     //===ACTIONS===
 
     public void openProductsPage() {
@@ -122,7 +125,6 @@ public class ProductsPage {
 
     public void verifyProductDetails() {
         wait.until(ExpectedConditions.visibilityOf(reviewField));
-        String quantity = quantityField.getAttribute("value");
 
         Assert.assertTrue(productInformation.isDisplayed());
         Assert.assertTrue(quantityLabel.isDisplayed());
@@ -132,8 +134,13 @@ public class ProductsPage {
         Assert.assertTrue(conditionLabel.isDisplayed());
         Assert.assertTrue(brandLabel.isDisplayed());
 
-        System.out.println("[TEST] QUANTITY: " +  quantity);
+    }
 
+    public void verifySearchedProduct() {
+        wait.until(ExpectedConditions.visibilityOf(searchedProductName));
+        String productName = searchedProductName.getText();
+
+        Assert.assertTrue(productName.contains(testData.getStringOf("PRODUCT")));
     }
 
 }

@@ -78,7 +78,7 @@ public class ProductsStep {
 
     @Then("the product should be displayed")
     public void the_product_should_be_displayed() {
-        product.viewProductDetails();
+        product.verifySearchedProduct();
     }
 
 

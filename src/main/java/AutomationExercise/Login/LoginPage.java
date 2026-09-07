@@ -106,14 +106,11 @@ public class LoginPage {
 
     }
 
-
     //===VALIDATIONS===
 
     public void validateSuccessfulLogin(){
         wait.until(ExpectedConditions.visibilityOf(messageLogged));
         wait.until(ExpectedConditions.visibilityOf(logoutButton));
-
-        System.out.println("[TEST] SUCCESSFUL LOGIN!!!");
 
     }
 
@@ -121,7 +118,6 @@ public class LoginPage {
         wait.until(ExpectedConditions.visibilityOf(loginEmailField));
         wait.until(ExpectedConditions.visibilityOf(loginPasswordField));
 
-        System.out.println("[TEST] SUCCESSFUL LOGOUT!!!");
     }
 
     public void validateInvalidCredentialsMessage(){
