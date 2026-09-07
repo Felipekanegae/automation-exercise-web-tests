@@ -93,25 +93,16 @@ public class LoginPage {
     private void fillLoginForm() {
         wait.until(ExpectedConditions.visibilityOf(loginEmailField));
 
-        String email = testData.getStringOf("EMAIL");
-        String password = testData.getStringOf("PASSWORD");
-        System.out.println("[TEST] EMAIL: " + email);
-
-        loginEmailField.sendKeys(email);
-        loginPasswordField.sendKeys(password);
+        loginEmailField.sendKeys(testData.getStringOf("EMAIL"));
+        loginPasswordField.sendKeys(testData.getStringOf("PASSWORD"));
 
     }
 
     private void fillNewUserForm() {
         wait.until(ExpectedConditions.visibilityOf(signupNameField));
 
-        String email = testData.getStringOf("EMAIL");
-        String name = testData.getStringOf("NAME");
-        System.out.println("[TEST] EMAIL: " + email);
-        System.out.println("[TEST] NAME: " + name);
-
-        signupNameField.sendKeys(name);
-        signupEmailField.sendKeys(email);
+        signupNameField.sendKeys(testData.getStringOf("NAME"));
+        signupEmailField.sendKeys(testData.getStringOf("EMAIL"));
 
     }
 

@@ -36,6 +36,9 @@ public class ProductsPage {
     @FindBy(xpath = "//*[contains(normalize-space(.), 'Add to cart')]")
     private WebElement addCartButton;
 
+    @FindBy(id = "submit_search")
+    private WebElement searchButton;
+
     @FindBy(className = "product-information")
     private WebElement productInformation;
 
@@ -44,6 +47,9 @@ public class ProductsPage {
 
     @FindBy(id = "review")
     private WebElement reviewField;
+
+    @FindBy(id = "search_product")
+    private WebElement searchProductField;
 
     @FindBy(xpath = "//*[normalize-space(text())='Quantity:']")
     private WebElement quantityLabel;
@@ -97,6 +103,19 @@ public class ProductsPage {
 
         wait.until(ExpectedConditions.elementToBeClickable(product));
         product.click();
+    }
+
+    public void searchProduct() {
+        fillProductName();
+        searchButton.click();
+    }
+
+    //===FORM FILLING===
+
+    private void fillProductName() {
+        wait.until(ExpectedConditions.visibilityOf(searchProductField));
+        searchProductField.sendKeys(testData.getStringOf("PRODUCT"));
+
     }
 
     //===VALIDATION===

@@ -67,20 +67,10 @@ public class ContactPage {
     private void fillContactForm(){
         wait.until(ExpectedConditions.visibilityOf(contactEmailField));
 
-        String name = testData.getStringOf("NAME");
-        String email = testData.getStringOf("EMAIL");
-        String subject = testData.getStringOf("SUBJECT");
-        String message = testData.getStringOf("MESSAGE");
-
-        System.out.println("[TEST] NAME: " + name);
-        System.out.println("[TEST] EMAIL: " + email);
-        System.out.println("[TEST] SUBJECT: " + subject);
-        System.out.println("[TEST] MESSAGE: " + message);
-
-        contactNameField.sendKeys(name);
-        contactEmailField.sendKeys(email);
-        contactSubjectField.sendKeys(subject);
-        contactMessageField.sendKeys(message);
+        contactNameField.sendKeys(testData.getStringOf("NAME"));
+        contactEmailField.sendKeys(testData.getStringOf("EMAIL"));
+        contactSubjectField.sendKeys(testData.getStringOf("SUBJECT"));
+        contactMessageField.sendKeys(testData.getStringOf("MESSAGE"));
         
     }
 
@@ -92,6 +82,7 @@ public class ContactPage {
     }
 
     public void validateSuccessMessage(){
+        wait.until(ExpectedConditions.visibilityOf(successMessage));
         String message = successMessage.getText();
 
         Assert.assertTrue(message.contains("Success! Your details have been submitted successfully."));

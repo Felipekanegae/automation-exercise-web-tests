@@ -56,12 +56,11 @@ public class ProductsStep {
     @Given("I am on the products page")
     public void i_am_on_the_products_page() {
         product.openProductsPage();
-
+        product.closeAdIfPresent();
     }
 
     @When("I select a product")
     public void i_select_a_product() {
-        product.closeAdIfPresent();
         product.viewProductDetails();
 
     }
@@ -70,6 +69,16 @@ public class ProductsStep {
     public void the_product_details_should_be_displayed() {
         product.verifyProductDetails();
 
+    }
+
+    @When("I enter a product name")
+    public void i_enter_a_product_name() {
+        product.searchProduct();
+    }
+
+    @Then("the product should be displayed")
+    public void the_product_should_be_displayed() {
+        product.viewProductDetails();
     }
 
 
