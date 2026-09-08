@@ -1,11 +1,10 @@
 Feature: Products
 
 
-  @CT4
+  @CT4 @teste
   Scenario: Search products and verify cart after login
 
     Given I am logged in
     And I am on the products page
-    When I search for products
-    And I add the products to the cart
+    When I add the products to the cart
     Then the products should be displayed in the cart

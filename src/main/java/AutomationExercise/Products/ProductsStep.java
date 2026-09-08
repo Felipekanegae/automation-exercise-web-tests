@@ -1,5 +1,6 @@
 package AutomationExercise.Products;
 
+import AutomationExercise.Login.LoginPage;
 import io.cucumber.java.After;
 import io.cucumber.java.Before;
 import io.cucumber.java.Scenario;
@@ -7,20 +8,17 @@ import io.cucumber.java.en.Given;
 import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
 import io.github.bonigarcia.wdm.WebDriverManager;
-import testData.ExcelTestData;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import testData.ExcelTestData;
 
 
 public class ProductsStep {
 
-    private static final Logger log = LoggerFactory.getLogger(ProductsStep.class);
     private ProductsPage product;
     private WebDriver driver;
     private ExcelTestData testData;
-    private String ct;
+    private LoginPage login;
 
     @Before
     public void iniciar(Scenario scenario) {
@@ -51,6 +49,8 @@ public class ProductsStep {
         driver.get("https://automationexercise.com");
 
         product = new ProductsPage(driver, testData);
+        login = new LoginPage(driver, testData);
+
     }
 
     @Given("I am on the products page")
@@ -83,20 +83,24 @@ public class ProductsStep {
 
     }
 
-    @When("I add products in cart")
-    public void i_add_products_in_cart() {
-        product.searchProduct(testData.getStringOf("PRODUCT_1"));
-        product.addProductToCart();
-        product.searchProduct(testData.getStringOf("PRODUCT_2"));
-        product.addProductToCart();
-        product.searchProduct(testData.getStringOf("PRODUCT_3"));
-        product.addProductToCart();
-
-    }
 
     @Then("the products should be displayed in the cart")
     public void the_products_should_be_displayed_in_the_cart() {
         product.verifyProductsInCart();
+
+    }
+
+    @Given("I am logged in")
+    public void i_am_logged_in() {
+        login.openLoginPage();
+        login.login();
+        product.openProductsPage();
+        product.closeAdIfPresent();
+    }
+
+    @When("I add the products to the cart")
+    public void i_add_the_products_to_the_cart() {
+        product.addProductsToCart();
 
     }
 

@@ -150,6 +150,15 @@ public class ProductsPage {
         addToCartButton.click();
     }
 
+    public void addProductsToCart() {
+        searchProduct(testData.getStringOf("PRODUCT_1"));
+        addProductToCart();
+        searchProduct(testData.getStringOf("PRODUCT_2"));
+        addProductToCart();
+        searchProduct(testData.getStringOf("PRODUCT_3"));
+        addProductToCart();
+    }
+
     //===FORM FILLING===
 
     private void fillProductName(String productName) {

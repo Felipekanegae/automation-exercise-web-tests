@@ -1,9 +1,9 @@
 Feature: Products
 
 
-  @CT3
+  @CT3 @teste
   Scenario: Add products to the cart
 
     Given I am on the products page
-    When I add products in cart
+    When I add the products to the cart
     Then the products should be displayed in the cart
