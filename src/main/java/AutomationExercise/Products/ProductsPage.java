@@ -54,6 +54,9 @@ public class ProductsPage {
     @FindBy(xpath = "//*[contains(normalize-space(.), 'Proceed To Checkout')]")
     private WebElement checkoutButton;
 
+    @FindBy(css = ".cart_quantity_delete")
+    private List<WebElement> deleteProductButtons;
+
     @FindBy(className = "product-information")
     private WebElement productInformation;
 
@@ -157,6 +160,24 @@ public class ProductsPage {
         addProductToCart();
         searchProduct(testData.getStringOf("PRODUCT_3"));
         addProductToCart();
+
+    }
+
+    public void removeProductFromCart() {
+
+        wait.until(ExpectedConditions.elementToBeClickable(cartButton));
+        cartButton.click();
+        wait.until(ExpectedConditions.visibilityOfAllElements(deleteProductButtons));
+
+        WebElement removeProductButton = deleteProductButtons.get(0);
+
+        ((JavascriptExecutor) driver).executeScript(
+                "arguments[0].scrollIntoView({block: 'center'});",
+                removeProductButton);
+
+        wait.until(ExpectedConditions.elementToBeClickable(removeProductButton));
+        removeProductButton.click();
+
     }
 
     //===FORM FILLING===
@@ -229,5 +250,45 @@ public class ProductsPage {
         Assert.assertTrue(product2Found, "Product not found: " + expectedProduct2);
         Assert.assertTrue(product3Found, "Product not found: " + expectedProduct3);
     }
+
+    public void verifyProductRemovedFromCart() {
+        wait.until(ExpectedConditions.visibilityOfAllElements(cartProductNames));
+
+        String expectedProduct1 = testData.getStringOf("PRODUCT_1");
+        String expectedProduct2 = testData.getStringOf("PRODUCT_2");
+        String expectedProduct3 = testData.getStringOf("PRODUCT_3");
+
+        boolean product1Found = false;
+        boolean product2Found = false;
+        boolean product3Found = false;
+
+        for (WebElement product : cartProductNames) {
+
+            String productName = product.getText();
+
+            if (productName.contains(expectedProduct1)) {
+                product1Found = true;
+            }
+
+            if (productName.contains(expectedProduct2)) {
+                product2Found = true;
+            }
+
+            if (productName.contains(expectedProduct3)) {
+                product3Found = true;
+            }
+        }
+
+        Assert.assertFalse(
+                product1Found,
+                "Product should have been removed: " + expectedProduct1
+        );
+
+        Assert.assertTrue(product2Found, "Product not found: " + expectedProduct2);
+        Assert.assertTrue(product3Found, "Product not found: " + expectedProduct3);
+
+    }
+
+
 }
 

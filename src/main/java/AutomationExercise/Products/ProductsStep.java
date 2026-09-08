@@ -104,6 +104,25 @@ public class ProductsStep {
 
     }
 
+    @Given("I have products in the cart")
+    public void i_have_products_in_the_cart() {
+        product.openProductsPage();
+        product.closeAdIfPresent();
+        product.addProductsToCart();
+    }
+
+    @When("I remove a product from the cart")
+    public void i_remove_a_product_from_the_cart() {
+        product.removeProductFromCart();
+
+    }
+
+    @Then("the product should no longer be displayed in the cart")
+    public void the_product_should_no_longer_be_displayed_in_the_cart() {
+        product.verifyProductRemovedFromCart();
+
+    }
+
 
     @After
     public void finalizar() {
