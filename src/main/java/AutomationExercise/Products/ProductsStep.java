@@ -123,6 +123,25 @@ public class ProductsStep {
 
     }
 
+    @Given("I am on the product details page")
+    public void i_am_on_the_product_details_page() {
+        product.openProductsPage();
+        product.viewProductDetails();
+
+    }
+
+    @When("I submit a product review")
+    public void i_submit_a_product_review() {
+        product.writeReview();
+
+    }
+
+    @Then("a review confirmation message should be displayed")
+    public void a_review_confirmation_message_should_be_displayed() {
+        product.validateThankYouForYourReviewMessage();
+
+    }
+
 
     @After
     public void finalizar() {

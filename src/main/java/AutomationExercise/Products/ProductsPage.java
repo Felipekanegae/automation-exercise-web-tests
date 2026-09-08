@@ -57,6 +57,9 @@ public class ProductsPage {
     @FindBy(css = ".cart_quantity_delete")
     private List<WebElement> deleteProductButtons;
 
+    @FindBy(id = "button-review")
+    private WebElement submitReviewButton;
+
     @FindBy(className = "product-information")
     private WebElement productInformation;
 
@@ -68,6 +71,15 @@ public class ProductsPage {
 
     @FindBy(id = "search_product")
     private WebElement searchProductField;
+
+    @FindBy(id = "name")
+    private WebElement nameReviewField;
+
+    @FindBy(id = "email")
+    private WebElement emailReviewField;
+
+    @FindBy(id = "review")
+    private WebElement textReviewField;
 
     @FindBy(xpath = "//*[normalize-space(text())='Quantity:']")
     private WebElement quantityLabel;
@@ -83,6 +95,9 @@ public class ProductsPage {
 
     @FindBy(css = ".productinfo.text-center p")
     private WebElement searchedProductName;
+
+    @FindBy(xpath = "//*[text()=\"Thank you for your review.\"]")
+    private WebElement thankYouForYourReviewMessage;
 
     //===ACTIONS===
 
@@ -180,6 +195,12 @@ public class ProductsPage {
 
     }
 
+    public void writeReview(){
+        wait.until(ExpectedConditions.visibilityOf(reviewField));
+        fillReview();
+        submitReviewButton.click();
+    }
+
     //===FORM FILLING===
 
     private void fillProductName(String productName) {
@@ -188,6 +209,14 @@ public class ProductsPage {
 
         searchProductField.clear();
         searchProductField.sendKeys(productName);
+
+    }
+
+    private void fillReview() {
+        nameReviewField.sendKeys(testData.getStringOf("NAME"));
+        emailReviewField.sendKeys(testData.getStringOf("EMAIL"));
+        textReviewField.sendKeys(testData.getStringOf("MESSAGE"));
+
     }
 
     //===VALIDATIONS===
@@ -279,16 +308,23 @@ public class ProductsPage {
             }
         }
 
-        Assert.assertFalse(
-                product1Found,
-                "Product should have been removed: " + expectedProduct1
-        );
-
-        Assert.assertTrue(product2Found, "Product not found: " + expectedProduct2);
-        Assert.assertTrue(product3Found, "Product not found: " + expectedProduct3);
+        Assert.assertFalse(product1Found, "Product should have been removed: " +
+                        expectedProduct1);
+        Assert.assertTrue(product2Found, "Product not found: " +
+                expectedProduct2);
+        Assert.assertTrue(product3Found, "Product not found: " +
+                expectedProduct3);
 
     }
 
+    public void validateThankYouForYourReviewMessage(){
+        wait.until(ExpectedConditions.visibilityOf(thankYouForYourReviewMessage));
+
+        String message =  thankYouForYourReviewMessage.getText();
+        Assert.assertTrue(message.contains("Thank you for your review."));
+
+        System.out.println("[TEST] " +  message);
+    }
 
 }
 
