@@ -51,7 +51,7 @@ public class ProductsPage {
     @FindBy(id = "submit_search")
     private WebElement searchButton;
 
-    @FindBy(xpath = "//*[contains(normalize-space(.), 'Proceed To Checkout')]")
+    @FindBy(css = "a.check_out")
     private WebElement checkoutButton;
 
     @FindBy(css = ".cart_quantity_delete")
@@ -98,6 +98,12 @@ public class ProductsPage {
 
     @FindBy(xpath = "//*[text()=\"Thank you for your review.\"]")
     private WebElement thankYouForYourReviewMessage;
+
+    @FindBy(id = "address_delivery")
+    private WebElement deliveryAddressBox;
+
+    @FindBy(id = "address_invoice")
+    private WebElement billingAddressBox;
 
     //===ACTIONS===
 
@@ -206,6 +212,14 @@ public class ProductsPage {
         wait.until(ExpectedConditions.visibilityOf(reviewField));
         fillReview();
         submitReviewButton.click();
+    }
+
+    public void proceedToCheckout() {
+        wait.until(ExpectedConditions.elementToBeClickable(cartButton));
+        cartButton.click();
+
+        wait.until(ExpectedConditions.elementToBeClickable(checkoutButton));
+        checkoutButton.click();
     }
 
     //===FORM FILLING===
@@ -331,6 +345,49 @@ public class ProductsPage {
         Assert.assertTrue(message.contains("Thank you for your review."));
 
         System.out.println("[TEST] " +  message);
+    }
+
+    public void validateDeliveryAddress() {
+        validateAddress(deliveryAddressBox);
+
+    }
+
+    public void validateBillingAddress() {
+        validateAddress(billingAddressBox);
+
+    }
+
+    private void validateAddress(WebElement addressBox){
+        wait.until(ExpectedConditions.visibilityOf(addressBox));
+
+        String address = addressBox.getText();
+
+        String expectedFirstName = testData.getStringOf("FIRST_NAME");
+        String expectedLastName = testData.getStringOf("LAST_NAME");
+        String expectedCompany = testData.getStringOf("COMPANY");
+        String expectedAddress = testData.getStringOf("ADDRESS");
+        String expectedCity = testData.getStringOf("CITY");
+        String expectedPostalCode = testData.getStringOf("ZIPCODE");
+        String expectedCountry = testData.getStringOf("COUNTRY");
+        String expectedPhone = testData.getStringOf("MOBILE_NUMBER");
+
+        Assert.assertTrue(address.contains(expectedFirstName),
+                "First name not found: " + expectedFirstName);
+        Assert.assertTrue(address.contains(expectedLastName),
+                "Last name not found: " + expectedLastName);
+        Assert.assertTrue(address.contains(expectedCompany),
+                "Company not found: " + expectedCompany);
+        Assert.assertTrue(address.contains(expectedAddress),
+                "Address not found: " + expectedAddress);
+        Assert.assertTrue(address.contains(expectedCity),
+                "City not found: " + expectedCity);
+        Assert.assertTrue(address.contains(expectedPostalCode),
+                "Zip Code not found: " + expectedPostalCode);
+        Assert.assertTrue(address.contains(expectedCountry),
+                "Country not found: " + expectedCountry);
+        Assert.assertTrue(address.contains(expectedPhone),
+                "Phone number not found: " + expectedPhone);
+
     }
 
 }

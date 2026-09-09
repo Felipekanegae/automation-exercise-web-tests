@@ -143,17 +143,19 @@ public class ProductsStep {
 
     @When("I proceed to checkout")
     public void i_proceed_to_checkout() {
+        product.proceedToCheckout();
 
     }
 
     @Then("the delivery address should be displayed correctly")
     public void the_delivery_address_should_be_displayed_correctly() {
+        product.validateDeliveryAddress();
 
     }
 
     @Then("the billing address should be displayed correctly")
     public void the_billing_address_should_be_displayed_correctly() {
-
+        product.validateBillingAddress();
     }
 
 
