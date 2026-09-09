@@ -1,19 +1,57 @@
 # Automation Exercise - Web Test Automation
 
-Web test automation project developed for the [Automation Exercise](https://automationexercise.com/) website.
+Web test automation project developed for portfolio purposes using Java, Selenium WebDriver, Cucumber, and the Page Object Model pattern.
 
-The goal of this project is to practice and demonstrate automated testing concepts using Java, Selenium WebDriver and Cucumber, applying good practices for test organization and maintainability.
+The project automates functional test scenarios on the Automation Exercise website, covering login, contact form, product search, shopping cart, product reviews, and checkout validation.
 
 ## Technologies
 
-- Java
+- Java 11
 - Selenium WebDriver
 - Cucumber
-- JUnit
+- JUnit Platform
+- TestNG Assertions
 - Maven
+- WebDriverManager
 - Apache POI
 - IntelliJ IDEA
 - Git & GitHub
+
+## Test Automation Approach
+
+The project uses:
+
+- BDD scenarios written in Gherkin
+- Page Object Model for separating page interactions from test steps
+- PageFactory for element initialization
+- Explicit waits with WebDriverWait
+- External test data stored in Excel files
+- Apache POI for reading test data
+- Cucumber hooks for browser setup and teardown
+- Scenario tags for identifying test cases
+
+## Automated Scenarios
+
+### Login
+
+- Login with valid credentials
+- Successful logout
+- Login with invalid credentials
+- Registration attempt using an email already in use
+
+### Contact
+
+- Submit a message through the Contact Us form
+
+### Products
+
+- View product details
+- Search for a product
+- Add multiple products to the cart
+- Verify cart contents after login
+- Remove a product from the cart
+- Submit a product review
+- Validate delivery and billing addresses during checkout
 
 ## Project Structure
 
@@ -23,56 +61,51 @@ src
 │   └── java
 │       ├── AutomationExercise
 │       │   ├── Contact
-│       │   └── Login
-│       └── massa
+│       │   ├── Login
+│       │   └── Products
+│       └── testData
 │
 └── test
     ├── java
     │   └── AutomationExercise
+    │       ├── Contact
+    │       ├── Login
+    │       └── Products
+    │
     └── resources
         ├── features
         │   ├── Contact
-        │   └── Login
+        │   ├── Login
+        │   └── Products
         └── massa
-```
-
-The project separates page interactions, test steps, test scenarios and test data in order to keep the automation organized and maintainable.
-
-## Automated Scenarios
-
-### Login and User Registration
-
-- Create a new user
-- Logout
-- Login with invalid credentials
-- Register with an existing email
-
-### Contact
-
-- Submit a contact/support request
-
-More scenarios will be added as the project evolves.
-
-## BDD
-
-Test scenarios are written using Gherkin syntax with Cucumber.
-
-Example:
-
-```gherkin
-Feature: Login
-
-  Scenario: Login with invalid credentials
-    Given the user accesses the login page
-    When the user enters invalid credentials
-    Then an authentication error message should be displayed
 ```
 
 ## Test Data
 
-Test data is stored separately from the test implementation and can be read from external files using Apache POI.
+Test data is stored in an Excel file located at:
 
-This approach helps keep test data independent from the automation code.
+```text
+src/test/resources/massa/Massa/automationExercise.xlsx
+```
+
+Each Cucumber scenario uses a test case tag, such as:
+
+```gherkin
+@CT1
+Scenario: Login with valid credentials
+```
+
+The scenario tag is used to identify and load the corresponding test data from the Excel file.
+
+## Example Scenario
+
+```gherkin
+@CT1
+Scenario: Login with valid credentials
+  Given I am on the login page
+  When I enter a valid email and password
+  Then the user should be logged in successfully
+```
 
 ## Running the Tests
 
@@ -80,35 +113,29 @@ This approach helps keep test data independent from the automation code.
 
 Make sure the following tools are installed:
 
-- Java
+- Java 11 or later
 - Maven
 - Google Chrome
 
-Clone the repository:
+### Run with Maven
 
-```bash
-git clone https://github.com/Felipekanegae/automation-exercise-web-tests.git
-```
-
-Navigate to the project directory:
-
-```bash
-cd automation-exercise-web-tests
-```
-
-Run the automated tests:
+From the project root directory, run:
 
 ```bash
 mvn test
 ```
 
-## Website Under Test
+The browser driver is managed automatically by WebDriverManager.
 
-Automation Exercise:
+## Test Design
 
-https://automationexercise.com/
+The automation follows separation of responsibilities:
 
-The website provides practice scenarios for web and API test automation.
+- **Feature files** describe test behavior using Gherkin.
+- **Step Definitions** connect Gherkin steps to automation code.
+- **Page Objects** contain page elements, actions, and validations.
+- **ExcelTestData** handles external test data.
+- **Runners** define the Cucumber test execution.
 
 ## Author
 
@@ -116,4 +143,4 @@ The website provides practice scenarios for web and API test automation.
 
 QA Automation Engineer
 
-GitHub: [Felipekanegae](https://github.com/Felipekanegae)
+GitHub: GitHub: [Felipekanegae](https://github.com/Felipekanegae)
