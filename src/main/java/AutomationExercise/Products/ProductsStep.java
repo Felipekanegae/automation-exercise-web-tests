@@ -94,8 +94,7 @@ public class ProductsStep {
     public void i_am_logged_in() {
         login.openLoginPage();
         login.login();
-        product.openProductsPage();
-        product.closeAdIfPresent();
+
     }
 
     @When("I add the products to the cart")
@@ -141,6 +140,22 @@ public class ProductsStep {
         product.validateThankYouForYourReviewMessage();
 
     }
+
+    @When("I proceed to checkout")
+    public void i_proceed_to_checkout() {
+
+    }
+
+    @Then("the delivery address should be displayed correctly")
+    public void the_delivery_address_should_be_displayed_correctly() {
+
+    }
+
+    @Then("the billing address should be displayed correctly")
+    public void the_billing_address_should_be_displayed_correctly() {
+
+    }
+
 
 
     @After

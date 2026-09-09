@@ -179,10 +179,13 @@ public class ProductsPage {
     }
 
     public void removeProductFromCart() {
-
         wait.until(ExpectedConditions.elementToBeClickable(cartButton));
         cartButton.click();
+
+        wait.until(ExpectedConditions.visibilityOfAllElements(cartProductNames));
         wait.until(ExpectedConditions.visibilityOfAllElements(deleteProductButtons));
+
+        String removedProductName = cartProductNames.get(0).getText();
 
         WebElement removeProductButton = deleteProductButtons.get(0);
 
@@ -192,6 +195,10 @@ public class ProductsPage {
 
         wait.until(ExpectedConditions.elementToBeClickable(removeProductButton));
         removeProductButton.click();
+
+        wait.until(driver ->
+                cartProductNames.stream().noneMatch(product ->
+                                product.getText().contains(removedProductName)));
 
     }
 
