@@ -10,20 +10,16 @@ import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
 import io.github.bonigarcia.wdm.WebDriverManager;
 import testData.ExcelTestData;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 
 public class LoginStep {
 
-    private static final Logger log = LoggerFactory.getLogger(LoginStep.class);
+
     private LoginPage login;
     private WebDriver driver;
-    private ExcelTestData massa;
-    private String ct;
+    private ExcelTestData testData;
 
     @Before
-    public void iniciar(Scenario scenario) {
+    public void beforeScenario(Scenario scenario) {
 
         String ct = scenario.getSourceTagNames()
                 .stream()
@@ -40,15 +36,15 @@ public class LoginStep {
         driver = new ChromeDriver();
         driver.manage().window().maximize();
 
-        massa = new ExcelTestData();
+        testData = new ExcelTestData();
 
-        massa.carregarMassa(
+        testData.carregarMassa(
                 "src/test/resources/massa/Massa/automationExercise.xlsx",
                 "automationExercise", ct);
 
         driver.get("https://automationexercise.com");
 
-        login = new LoginPage(driver, massa);
+        login = new LoginPage(driver, testData);
     }
 
     @Given("I am on the login page")
@@ -71,19 +67,18 @@ public class LoginStep {
     @Given("I am logged in")
     public void i_am_logged_in() {
         login.openLoginPage();
-
+        login.login();
+        login.validateSuccessfulLogin();
     }
 
     @When("I log out")
     public void i_log_out() {
-        login.login();
-        login.validateSuccessfulLogin();
+        login.logout();
 
     }
 
     @Then("I should be logged out successfully")
     public void i_should_be_logged_out_successfully() {
-        login.logout();
         login.validateSuccessfulLogout();
 
     }
@@ -105,6 +100,7 @@ public class LoginStep {
         login.openLoginPage();
 
     }
+
     @When("I enter an email that is already registered")
     public void i_enter_an_email_that_is_already_registered() {
         login.registerNewUser();
@@ -119,7 +115,7 @@ public class LoginStep {
 
 
     @After
-    public void finalizar() {
+    public void afterScenario() {
         if (driver != null) {
             driver.quit();
 

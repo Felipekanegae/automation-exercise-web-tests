@@ -1,7 +1,7 @@
 Feature: Products
 
 
-  @CT4 @teste
+  @CT4
   Scenario: Search products and verify cart after login
 
     Given I am logged in

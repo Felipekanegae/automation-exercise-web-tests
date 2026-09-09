@@ -12,7 +12,7 @@ import static io.cucumber.junit.platform.engine.Constants.GLUE_PROPERTY_NAME;
 @IncludeEngines("cucumber")
 @SelectClasspathResource("features/Login")
 @ConfigurationParameter(key = GLUE_PROPERTY_NAME, value = "AutomationExercise/Login")
-//@ConfigurationParameter(key = FILTER_TAGS_PROPERTY_NAME, value = "@CT1")
+//@ConfigurationParameter(key = FILTER_TAGS_PROPERTY_NAME, value = "@CT2")
 public class LoginTest {
 
 }

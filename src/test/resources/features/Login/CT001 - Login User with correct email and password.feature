@@ -1,7 +1,7 @@
 Feature: Login
 
   @CT1
-  Scenario: Login User with correct email and password
+  Scenario: Login with valid credentials
 
     Given I am on the login page
     When I enter a valid email and password

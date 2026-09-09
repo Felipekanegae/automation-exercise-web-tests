@@ -78,9 +78,6 @@ public class ProductsPage {
     @FindBy(id = "email")
     private WebElement emailReviewField;
 
-    @FindBy(id = "review")
-    private WebElement textReviewField;
-
     @FindBy(xpath = "//*[normalize-space(text())='Quantity:']")
     private WebElement quantityLabel;
 
@@ -236,7 +233,7 @@ public class ProductsPage {
     private void fillReview() {
         nameReviewField.sendKeys(testData.getStringOf("NAME"));
         emailReviewField.sendKeys(testData.getStringOf("EMAIL"));
-        textReviewField.sendKeys(testData.getStringOf("MESSAGE"));
+        reviewField.sendKeys(testData.getStringOf("MESSAGE"));
 
     }
 

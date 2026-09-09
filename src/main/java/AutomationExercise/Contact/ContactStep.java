@@ -7,23 +7,20 @@ import io.cucumber.java.en.Given;
 import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
 import io.github.bonigarcia.wdm.WebDriverManager;
-import testData.ExcelTestData;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import testData.ExcelTestData;
 
 
 public class ContactStep {
 
-    private static final Logger log = LoggerFactory.getLogger(ContactStep.class);
     private ContactPage contact;
     private WebDriver driver;
-    private ExcelTestData massa;
-    private String ct;
+    private ExcelTestData testData;
+
 
     @Before
-    public void iniciar(Scenario scenario) {
+    public void beforeScenario(Scenario scenario) {
 
         String ct = scenario.getSourceTagNames()
                 .stream()
@@ -40,9 +37,9 @@ public class ContactStep {
         driver = new ChromeDriver();
         driver.manage().window().maximize();
 
-        massa = new ExcelTestData();
+        testData = new ExcelTestData();
 
-        massa.carregarMassa(
+        testData.carregarMassa(
                 "src/test/resources/massa/Massa/automationExercise.xlsx",
                 "automationExercise",
                 ct
@@ -50,27 +47,28 @@ public class ContactStep {
 
         driver.get("https://automationexercise.com");
 
-        contact = new ContactPage(driver, massa);
+        contact = new ContactPage(driver, testData);
     }
 
     @Given("I am on the Contact Us page")
     public void i_am_on_the_contact_us_page() {
         contact.openContactUsPage();
     }
+
     @When("I fill in the contact form")
     public void i_fill_in_the_contact_form() {
         contact.sendContactMessage();
         contact.acceptAlertMessage();
     }
+
     @Then("the message is sent successfully")
     public void the_message_is_sent_successfully() {
         contact.validateSuccessMessage();
+
     }
 
-
-
     @After
-    public void finalizar() {
+    public void afterScenario() {
         if (driver != null) {
             driver.quit();
 

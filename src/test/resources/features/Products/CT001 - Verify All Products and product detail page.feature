@@ -2,7 +2,7 @@ Feature: Products
 
 
   @CT1
-  Scenario: Verify All Products and product detail page
+  Scenario: View product details
 
     Given I am on the products page
     When I select a product

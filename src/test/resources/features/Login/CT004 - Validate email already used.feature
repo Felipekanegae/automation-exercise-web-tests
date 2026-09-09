@@ -2,7 +2,7 @@ Feature: Login
 
 
   @CT4
-  Scenario: Validate email already used
+  Scenario: Register with an email already in use
 
     Given I am on the registration page
     When I enter an email that is already registered

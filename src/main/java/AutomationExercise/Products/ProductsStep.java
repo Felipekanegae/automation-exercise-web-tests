@@ -21,7 +21,7 @@ public class ProductsStep {
     private LoginPage login;
 
     @Before
-    public void iniciar(Scenario scenario) {
+    public void beforeScenario(Scenario scenario) {
 
         String ct = scenario.getSourceTagNames()
                 .stream()
@@ -156,12 +156,11 @@ public class ProductsStep {
     @Then("the billing address should be displayed correctly")
     public void the_billing_address_should_be_displayed_correctly() {
         product.validateBillingAddress();
+
     }
 
-
-
     @After
-    public void finalizar() {
+    public void afterScenario() {
         if (driver != null) {
             driver.quit();
 

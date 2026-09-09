@@ -1,7 +1,7 @@
 Feature: Products
 
 
-  @CT3 @teste
+  @CT3
   Scenario: Add products to the cart
 
     Given I am on the products page
