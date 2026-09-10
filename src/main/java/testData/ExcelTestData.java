@@ -9,68 +9,68 @@ import java.util.Map;
 
 public class ExcelTestData {
 
-    private final Map<String, String> dados = new HashMap<>();
+    private final Map<String, String> testData = new HashMap<>();
 
-    public void carregarMassa(String caminhoArquivo, String nomeAba, String ct) {
+    public void loadTestData(String filePath, String sheetName, String testCase) {
 
-        try (InputStream input = new FileInputStream(caminhoArquivo);
+        try (InputStream input = new FileInputStream(filePath);
              Workbook workbook = WorkbookFactory.create(input)) {
 
-            Sheet sheet = workbook.getSheet(nomeAba);
+            Sheet sheet = workbook.getSheet(sheetName);
 
             if (sheet == null) {
-                throw new RuntimeException("Aba não encontrada: " + nomeAba);
+                throw new RuntimeException("Sheet not found: " + sheetName);
             }
 
-            Row cabecalho = sheet.getRow(0);
+            Row header = sheet.getRow(0);
 
-            if (cabecalho == null) {
-                throw new RuntimeException("Cabeçalho não encontrado na planilha.");
+            if (header == null) {
+                throw new RuntimeException("Header not found in spreadsheet.");
             }
 
             for (int i = 1; i <= sheet.getLastRowNum(); i++) {
 
-                Row linha = sheet.getRow(i);
+                Row row = sheet.getRow(i);
 
-                if (linha == null) {
+                if (row == null) {
                     continue;
                 }
 
-                String valorCt = getValorCelula(linha.getCell(0));
+                String testCaseValue = getCellValue(row.getCell(0));
 
-                if (valorCt.equals(ct)) {
+                if (testCaseValue.equals(testCase)) {
 
-                    for (int coluna = 0; coluna < cabecalho.getLastCellNum(); coluna++) {
+                    for (int column = 0; column < header.getLastCellNum(); column++) {
 
-                        String nomeColuna = getValorCelula(cabecalho.getCell(coluna));
-                        String valorCelula = getValorCelula(linha.getCell(coluna));
+                        String columnName = getCellValue(header.getCell(column));
+                        String cellValue = getCellValue(row.getCell(column));
 
-                        dados.put(nomeColuna, valorCelula);
+                        testData.put(columnName, cellValue);
                     }
 
                     return;
                 }
             }
 
-            throw new RuntimeException("CT não encontrado na planilha: " + ct);
+            throw new RuntimeException("Test case not found in spreadsheet: " + testCase);
 
         } catch (Exception e) {
-            throw new RuntimeException("Erro ao ler a massa Excel: " + e.getMessage(), e);
+            throw new RuntimeException("Error reading Excel test data: " + e.getMessage(), e);
         }
     }
 
-    public String getStringOf(String coluna) {
+    public String getStringOf(String column) {
 
-        String valor = dados.get(coluna);
+        String value = testData.get(column);
 
-        if (valor == null) {
-            throw new RuntimeException("Coluna não encontrada na massa: " + coluna);
+        if (value == null) {
+            throw new RuntimeException("Column not found in test data: " + column);
         }
 
-        return valor;
+        return value;
     }
 
-    private String getValorCelula(Cell cell) {
+    private String getCellValue(Cell cell) {
 
         if (cell == null) {
             return "";
