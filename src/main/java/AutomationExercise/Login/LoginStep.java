@@ -9,7 +9,9 @@ import io.cucumber.java.en.When;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
 import io.github.bonigarcia.wdm.WebDriverManager;
+import org.openqa.selenium.chrome.ChromeOptions;
 import testData.ExcelTestData;
+
 
 public class LoginStep {
 
@@ -33,7 +35,13 @@ public class LoginStep {
         System.out.println("[TEST] Tags do cenário: " + scenario.getSourceTagNames());
         System.out.println("[TEST] CT usado: " + ct);
 
-        driver = new ChromeDriver();
+        ChromeOptions options = new ChromeOptions();
+
+        if (Boolean.getBoolean("headless")) {
+            options.addArguments("--headless=new");
+        }
+
+        driver = new ChromeDriver(options);
         driver.manage().window().maximize();
 
         testData = new ExcelTestData();

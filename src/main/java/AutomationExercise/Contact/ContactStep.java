@@ -10,6 +10,7 @@ import io.github.bonigarcia.wdm.WebDriverManager;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
 import testData.ExcelTestData;
+import org.openqa.selenium.chrome.ChromeOptions;
 
 
 public class ContactStep {
@@ -34,16 +35,20 @@ public class ContactStep {
         System.out.println("[TEST] Tags do cenário: " + scenario.getSourceTagNames());
         System.out.println("[TEST] CT usado: " + ct);
 
-        driver = new ChromeDriver();
+        ChromeOptions options = new ChromeOptions();
+
+        if (Boolean.getBoolean("headless")) {
+            options.addArguments("--headless=new");
+        }
+
+        driver = new ChromeDriver(options);
         driver.manage().window().maximize();
 
         testData = new ExcelTestData();
 
         testData.loadTestData(
                 "src/test/resources/massa/Massa/automationExercise.xlsx",
-                "automationExercise",
-                ct
-        );
+                "automationExercise", ct);
 
         driver.get("https://automationexercise.com");
 
