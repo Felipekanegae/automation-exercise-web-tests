@@ -86,6 +86,17 @@ public class ContactStep {
             }
         });
 
+        devTools.addListener(Network.responseReceived(), response -> {
+            String url = response.getResponse().getUrl();
+
+            if (url.contains("googlesyndication") ||
+                    url.contains("doubleclick") ||
+                    url.contains("adservice")) {
+
+                System.out.println("[RESPONSE] " + url);
+            }
+        });
+
         driver.manage().window().maximize();
 
         testData = new ExcelTestData();
