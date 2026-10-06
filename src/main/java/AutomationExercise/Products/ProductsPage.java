@@ -170,8 +170,13 @@ public class ProductsPage {
         fillProductName(productName);
 
         wait.until(ExpectedConditions.elementToBeClickable(searchButton));
-        inspectBlockingModal();
-        searchButton.click();
+
+        try {
+            searchButton.click();
+        } catch (ElementClickInterceptedException e) {
+            inspectBlockingModal();
+            throw e;
+        }
     }
 
     private void addProductToCart() {
@@ -384,18 +389,25 @@ public class ProductsPage {
 
         Assert.assertTrue(address.contains(expectedFirstName),
                 "First name not found: " + expectedFirstName);
+
         Assert.assertTrue(address.contains(expectedLastName),
                 "Last name not found: " + expectedLastName);
+
         Assert.assertTrue(address.contains(expectedCompany),
                 "Company not found: " + expectedCompany);
+
         Assert.assertTrue(address.contains(expectedAddress),
                 "Address not found: " + expectedAddress);
+
         Assert.assertTrue(address.contains(expectedCity),
                 "City not found: " + expectedCity);
+
         Assert.assertTrue(address.contains(expectedPostalCode),
                 "Zip Code not found: " + expectedPostalCode);
+
         Assert.assertTrue(address.contains(expectedCountry),
                 "Country not found: " + expectedCountry);
+
         Assert.assertTrue(address.contains(expectedPhone),
                 "Phone number not found: " + expectedPhone);
 
@@ -403,9 +415,9 @@ public class ProductsPage {
 
     private void inspectBlockingModal() {
 
-        List<WebElement> modals = driver.findElements(By.cssSelector(".modal-body"));
+        List<WebElement> modals = driver.findElements(By.cssSelector(".modal-content"));
 
-        System.out.println("[MODAL] Quantidade encontrada: " + modals.size());
+        System.out.println("[MODAL] Quantidade de .modal-content: " + modals.size());
 
         for (WebElement modal : modals) {
 
@@ -417,7 +429,7 @@ public class ProductsPage {
                         "let el = arguments[0];" +
                                 "let result = '';" +
                                 "let level = 0;" +
-                                "while (el && level < 6) {" +
+                                "while (el && level < 4) {" +
                                 "   result += '\\n[NIVEL ' + level + '] ' + el.outerHTML;" +
                                 "   el = el.parentElement;" +
                                 "   level++;" +
