@@ -62,6 +62,9 @@ public class ProductsPage {
     @FindBy(id = "button-review")
     private WebElement submitReviewButton;
 
+    @FindBy(xpath = "//*[contains(normalize-space(.), 'Continue Shopping')]")
+    private WebElement continueShoppingButton;
+
     @FindBy(className = "product-information")
     private WebElement productInformation;
 
@@ -114,20 +117,34 @@ public class ProductsPage {
 
     public void closeAdIfPresent() {
 
-        List<WebElement> ads =
-                driver.findElements(By.cssSelector("iframe[title='Advertisement']"));
+        driver.switchTo().defaultContent();
+
+        List<WebElement> ads = driver.findElements(
+                By.xpath("//iframe[contains(@id, 'aswift_') " +
+                        "or contains(@name, 'aswift_') " +
+                        "or @title='3rd party ad content' " +
+                        "or @title='Advertisement']"));
 
         for (WebElement ad : ads) {
-            driver.switchTo().defaultContent();
-            driver.switchTo().frame(ad);
 
-            List<WebElement> closeButtons =
-                    driver.findElements(By.id("dismiss-button-element"));
+            try {
+                driver.switchTo().defaultContent();
+                driver.switchTo().frame(ad);
 
-            if (!closeButtons.isEmpty()) {
-                JavascriptExecutor js = (JavascriptExecutor) driver;
-                js.executeScript("arguments[0].click();", closeButtons.get(0));
-                break;
+                List<WebElement> closeButtons =
+                        driver.findElements(By.id("dismiss-button-element"));
+
+                if (!closeButtons.isEmpty()) {
+
+                    JavascriptExecutor js = (JavascriptExecutor) driver;
+                    js.executeScript("arguments[0].click();", closeButtons.get(0));
+
+                    driver.switchTo().defaultContent();
+                    return;
+                }
+
+            } catch (Exception e) {
+                driver.switchTo().defaultContent();
             }
         }
 
@@ -135,7 +152,7 @@ public class ProductsPage {
     }
 
     public void viewProductDetails() {
-        closeAdIfPresent();
+
         wait.until(ExpectedConditions.visibilityOfAllElements(viewProductButtons));
 
         WebElement product = viewProductButtons.get(0);
@@ -145,7 +162,6 @@ public class ProductsPage {
                 product);
 
         wait.until(ExpectedConditions.elementToBeClickable(product));
-
         product.click();
     }
 
@@ -157,8 +173,8 @@ public class ProductsPage {
         searchButton.click();
     }
 
-    public void addProductToCart() {
-        closeAdIfPresent();
+    private void addProductToCart() {
+
         wait.until(ExpectedConditions.visibilityOfAllElements(addToCartButtons));
 
         WebElement addToCartButton = addToCartButtons.get(0);
@@ -226,14 +242,13 @@ public class ProductsPage {
 
         searchProductField.clear();
         searchProductField.sendKeys(productName);
-
     }
 
     private void fillReview() {
+
         nameReviewField.sendKeys(testData.getStringOf("NAME"));
         emailReviewField.sendKeys(testData.getStringOf("EMAIL"));
         reviewField.sendKeys(testData.getStringOf("MESSAGE"));
-
     }
 
     //===VALIDATIONS===
@@ -253,13 +268,12 @@ public class ProductsPage {
     }
 
     public void verifySearchedProduct() {
+
         wait.until(ExpectedConditions.visibilityOf(searchedProductName));
 
         String productName = searchedProductName.getText();
 
-        Assert.assertTrue(
-                productName.contains(testData.getStringOf("PRODUCT_1")));
-
+        Assert.assertTrue(productName.contains(testData.getStringOf("PRODUCT_1")));
     }
 
     public void verifyProductsInCart() {

@@ -11,8 +11,14 @@ import io.github.bonigarcia.wdm.WebDriverManager;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.chrome.ChromeOptions;
+import org.openqa.selenium.devtools.DevTools;
+import org.openqa.selenium.devtools.v154.network.Network;
 import testData.ExcelTestData;
 
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Optional;
 
 
 public class ProductsStep {
@@ -39,11 +45,35 @@ public class ProductsStep {
 
         ChromeOptions options = new ChromeOptions();
 
+        Map<String, Object> prefs = new HashMap<>();
+        prefs.put("profile.default_content_setting_values.ads", 2);
+
+        options.setExperimentalOption("prefs", prefs);
+
         if (Boolean.getBoolean("headless")) {
             options.addArguments("--headless=new");
         }
 
         driver = new ChromeDriver(options);
+        DevTools devTools = ((ChromeDriver) driver).getDevTools();
+        devTools.createSession();
+
+        devTools.send(
+                Network.enable(
+                        Optional.empty(),
+                        Optional.empty(),
+                        Optional.empty(),
+                        Optional.empty(),
+                        Optional.empty()));
+
+        devTools.send(
+                Network.setBlockedURLs(
+                        Optional.empty(),
+                        Optional.of(Arrays.asList(
+                                "*googlesyndication.com*",
+                                "*doubleclick.net*",
+                                "*googleads.g.doubleclick.net*"))));
+
         driver.manage().window().maximize();
 
         testData = new ExcelTestData();
@@ -61,108 +91,108 @@ public class ProductsStep {
 
     @Given("I am on the products page")
     public void i_am_on_the_products_page() {
+
         product.openProductsPage();
-        product.closeAdIfPresent();
     }
 
     @When("I select a product")
     public void i_select_a_product() {
-        product.viewProductDetails();
 
+        product.viewProductDetails();
     }
 
     @Then("the product details should be displayed")
     public void the_product_details_should_be_displayed() {
-        product.verifyProductDetails();
 
+        product.verifyProductDetails();
     }
 
     @When("I enter a product name")
     public void i_enter_a_product_name() {
-        product.searchProduct(testData.getStringOf("PRODUCT_1"));
 
+        product.searchProduct(testData.getStringOf("PRODUCT_1"));
     }
 
     @Then("the product should be displayed")
     public void the_product_should_be_displayed() {
-        product.verifySearchedProduct();
 
+        product.verifySearchedProduct();
     }
 
 
     @Then("the products should be displayed in the cart")
     public void the_products_should_be_displayed_in_the_cart() {
-        product.verifyProductsInCart();
 
+        product.verifyProductsInCart();
     }
 
     @Given("I am logged in")
     public void i_am_logged_in() {
+
         login.openLoginPage();
         login.login();
-
     }
 
     @When("I add the products to the cart")
     public void i_add_the_products_to_the_cart() {
-        product.addProductsToCart();
 
+        product.addProductsToCart();
     }
 
     @Given("I have products in the cart")
     public void i_have_products_in_the_cart() {
+
         product.openProductsPage();
-        product.closeAdIfPresent();
         product.addProductsToCart();
     }
 
     @When("I remove a product from the cart")
     public void i_remove_a_product_from_the_cart() {
-        product.removeProductFromCart();
 
+        product.removeProductFromCart();
     }
 
     @Then("the product should no longer be displayed in the cart")
     public void the_product_should_no_longer_be_displayed_in_the_cart() {
-        product.verifyProductRemovedFromCart();
 
+        product.verifyProductRemovedFromCart();
     }
 
     @Given("I am on the product details page")
     public void i_am_on_the_product_details_page() {
+
         product.openProductsPage();
         product.viewProductDetails();
-
     }
 
     @When("I submit a product review")
     public void i_submit_a_product_review() {
-        product.writeReview();
 
+        product.writeReview();
     }
 
     @Then("a review confirmation message should be displayed")
     public void a_review_confirmation_message_should_be_displayed() {
-        product.validateThankYouForYourReviewMessage();
 
+        product.validateThankYouForYourReviewMessage();
     }
 
     @When("I proceed to checkout")
     public void i_proceed_to_checkout() {
-        product.proceedToCheckout();
 
+        product.proceedToCheckout();
     }
 
     @Then("the delivery address should be displayed correctly")
     public void the_delivery_address_should_be_displayed_correctly() {
-        product.validateDeliveryAddress();
 
+        product.validateDeliveryAddress();
     }
 
     @Then("the billing address should be displayed correctly")
     public void the_billing_address_should_be_displayed_correctly() {
-        product.validateBillingAddress();
 
+        product.validateBillingAddress();
     }
 
     @After

@@ -10,7 +10,14 @@ import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
 import io.github.bonigarcia.wdm.WebDriverManager;
 import org.openqa.selenium.chrome.ChromeOptions;
+import org.openqa.selenium.devtools.DevTools;
+import org.openqa.selenium.devtools.v154.network.Network;
 import testData.ExcelTestData;
+
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Optional;
 
 
 public class LoginStep {
@@ -37,11 +44,35 @@ public class LoginStep {
 
         ChromeOptions options = new ChromeOptions();
 
+        Map<String, Object> prefs = new HashMap<>();
+        prefs.put("profile.default_content_setting_values.ads", 2);
+
+        options.setExperimentalOption("prefs", prefs);
+
         if (Boolean.getBoolean("headless")) {
             options.addArguments("--headless=new");
         }
 
         driver = new ChromeDriver(options);
+        DevTools devTools = ((ChromeDriver) driver).getDevTools();
+        devTools.createSession();
+
+        devTools.send(
+                Network.enable(
+                        Optional.empty(),
+                        Optional.empty(),
+                        Optional.empty(),
+                        Optional.empty(),
+                        Optional.empty()));
+
+        devTools.send(
+                Network.setBlockedURLs(
+                        Optional.empty(),
+                        Optional.of(Arrays.asList(
+                                "*googlesyndication.com*",
+                                "*doubleclick.net*",
+                                "*googleads.g.doubleclick.net*"))));
+
         driver.manage().window().maximize();
 
         testData = new ExcelTestData();
