@@ -21,7 +21,6 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 
-
 public class ProductsStep {
 
     private ProductsPage product;
@@ -53,6 +52,7 @@ public class ProductsStep {
 
         if (Boolean.getBoolean("headless")) {
             options.addArguments("--headless=new");
+            options.addArguments("--window-size=1920,1080");
         }
 
         driver = new ChromeDriver(options);

@@ -20,7 +20,6 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 
-
 public class LoginStep {
 
     private LoginPage login;
@@ -51,6 +50,7 @@ public class LoginStep {
 
         if (Boolean.getBoolean("headless")) {
             options.addArguments("--headless=new");
+            options.addArguments("--window-size=1920,1080");
         }
 
         driver = new ChromeDriver(options);

@@ -20,13 +20,11 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 
-
 public class ContactStep {
 
     private ContactPage contact;
     private WebDriver driver;
     private ExcelTestData testData;
-
 
     @Before
     public void beforeScenario(Scenario scenario) {
@@ -52,6 +50,7 @@ public class ContactStep {
 
         if (Boolean.getBoolean("headless")) {
             options.addArguments("--headless=new");
+            options.addArguments("--window-size=1920,1080");
         }
 
         driver = new ChromeDriver(options);
