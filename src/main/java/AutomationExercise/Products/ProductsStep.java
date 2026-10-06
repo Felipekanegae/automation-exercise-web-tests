@@ -74,6 +74,18 @@ public class ProductsStep {
                                 "*doubleclick.net*",
                                 "*googleads.g.doubleclick.net*"))));
 
+        devTools.addListener(Network.requestWillBeSent(), request -> {
+            String url = request.getRequest().getUrl();
+
+            if (url.contains("google") ||
+                    url.contains("doubleclick") ||
+                    url.contains("adservice") ||
+                    url.contains("ads")) {
+
+                System.out.println("[NETWORK] " + url);
+            }
+        });
+
         driver.manage().window().maximize();
 
         testData = new ExcelTestData();
