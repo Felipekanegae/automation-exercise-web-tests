@@ -170,6 +170,7 @@ public class ProductsPage {
         fillProductName(productName);
 
         wait.until(ExpectedConditions.elementToBeClickable(searchButton));
+        inspectBlockingModal();
         searchButton.click();
     }
 
@@ -398,6 +399,37 @@ public class ProductsPage {
         Assert.assertTrue(address.contains(expectedPhone),
                 "Phone number not found: " + expectedPhone);
 
+    }
+
+    private void inspectBlockingModal() {
+
+        List<WebElement> modals = driver.findElements(By.cssSelector(".modal-body"));
+
+        System.out.println("[MODAL] Quantidade encontrada: " + modals.size());
+
+        for (WebElement modal : modals) {
+
+            if (modal.isDisplayed()) {
+
+                JavascriptExecutor js = (JavascriptExecutor) driver;
+
+                String info = (String) js.executeScript(
+                        "let el = arguments[0];" +
+                                "let result = '';" +
+                                "let level = 0;" +
+                                "while (el && level < 6) {" +
+                                "   result += '\\n[NIVEL ' + level + '] ' + el.outerHTML;" +
+                                "   el = el.parentElement;" +
+                                "   level++;" +
+                                "}" +
+                                "return result;",
+                        modal
+                );
+
+                System.out.println("[MODAL] VISÍVEL");
+                System.out.println(info);
+            }
+        }
     }
 
 }
