@@ -9,16 +9,16 @@ import io.cucumber.java.en.When;
 import io.github.bonigarcia.wdm.WebDriverManager;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
-import testData.ExcelTestData;
 import org.openqa.selenium.chrome.ChromeOptions;
 import org.openqa.selenium.devtools.DevTools;
 import org.openqa.selenium.devtools.v154.network.Network;
+import org.openqa.selenium.devtools.v154.network.model.RequestId;
+import testData.ExcelTestData;
 
 import java.util.Arrays;
-import java.util.Optional;
-
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
 
 
 public class ContactStep {
@@ -55,6 +55,7 @@ public class ContactStep {
         }
 
         driver = new ChromeDriver(options);
+
         DevTools devTools = ((ChromeDriver) driver).getDevTools();
         devTools.createSession();
 
@@ -64,7 +65,9 @@ public class ContactStep {
                         Optional.empty(),
                         Optional.empty(),
                         Optional.empty(),
-                        Optional.empty()));
+                        Optional.empty()
+                )
+        );
 
         devTools.send(
                 Network.setBlockedURLs(
@@ -72,10 +75,17 @@ public class ContactStep {
                         Optional.of(Arrays.asList(
                                 "*googlesyndication.com*",
                                 "*doubleclick.net*",
-                                "*googleads.g.doubleclick.net*"))));
+                                "*googleads.g.doubleclick.net*"
+                        ))
+                )
+        );
+
+        Map<RequestId, String> requestUrls = new HashMap<>();
 
         devTools.addListener(Network.requestWillBeSent(), request -> {
             String url = request.getRequest().getUrl();
+
+            requestUrls.put(request.getRequestId(), url);
 
             if (url.contains("google") ||
                     url.contains("doubleclick") ||
@@ -83,6 +93,22 @@ public class ContactStep {
                     url.contains("ads")) {
 
                 System.out.println("[NETWORK] " + url);
+            }
+        });
+
+        devTools.addListener(Network.loadingFailed(), failed -> {
+            String url = requestUrls.get(failed.getRequestId());
+
+            if (url != null &&
+                    (url.contains("googlesyndication") ||
+                            url.contains("doubleclick") ||
+                            url.contains("adservice"))) {
+
+                System.out.println(
+                        "[FAILED] " +
+                                failed.getErrorText() +
+                                " | " + url
+                );
             }
         });
 
@@ -102,7 +128,9 @@ public class ContactStep {
 
         testData.loadTestData(
                 "src/test/resources/massa/Massa/automationExercise.xlsx",
-                "automationExercise", ct);
+                "automationExercise",
+                ct
+        );
 
         driver.get("https://automationexercise.com");
 
@@ -123,15 +151,12 @@ public class ContactStep {
     @Then("the message is sent successfully")
     public void the_message_is_sent_successfully() {
         contact.validateSuccessMessage();
-
     }
 
     @After
     public void afterScenario() {
         if (driver != null) {
             driver.quit();
-
         }
     }
-
 }

@@ -13,6 +13,7 @@ import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.chrome.ChromeOptions;
 import org.openqa.selenium.devtools.DevTools;
 import org.openqa.selenium.devtools.v154.network.Network;
+import org.openqa.selenium.devtools.v154.network.model.RequestId;
 import testData.ExcelTestData;
 
 import java.util.Arrays;
@@ -55,6 +56,7 @@ public class ProductsStep {
         }
 
         driver = new ChromeDriver(options);
+
         DevTools devTools = ((ChromeDriver) driver).getDevTools();
         devTools.createSession();
 
@@ -64,7 +66,9 @@ public class ProductsStep {
                         Optional.empty(),
                         Optional.empty(),
                         Optional.empty(),
-                        Optional.empty()));
+                        Optional.empty()
+                )
+        );
 
         devTools.send(
                 Network.setBlockedURLs(
@@ -72,10 +76,17 @@ public class ProductsStep {
                         Optional.of(Arrays.asList(
                                 "*googlesyndication.com*",
                                 "*doubleclick.net*",
-                                "*googleads.g.doubleclick.net*"))));
+                                "*googleads.g.doubleclick.net*"
+                        ))
+                )
+        );
+
+        Map<RequestId, String> requestUrls = new HashMap<>();
 
         devTools.addListener(Network.requestWillBeSent(), request -> {
             String url = request.getRequest().getUrl();
+
+            requestUrls.put(request.getRequestId(), url);
 
             if (url.contains("google") ||
                     url.contains("doubleclick") ||
@@ -86,124 +97,133 @@ public class ProductsStep {
             }
         });
 
+        devTools.addListener(Network.loadingFailed(), failed -> {
+            String url = requestUrls.get(failed.getRequestId());
+
+            if (url != null &&
+                    (url.contains("googlesyndication") ||
+                            url.contains("doubleclick") ||
+                            url.contains("adservice"))) {
+
+                System.out.println(
+                        "[FAILED] " +
+                                failed.getErrorText() +
+                                " | " + url
+                );
+            }
+        });
+
+        devTools.addListener(Network.responseReceived(), response -> {
+            String url = response.getResponse().getUrl();
+
+            System.out.println(
+                    "[RESPONSE] " +
+                            response.getResponse().getStatus() +
+                            " | " + url
+            );
+        });
+
         driver.manage().window().maximize();
 
         testData = new ExcelTestData();
 
         testData.loadTestData(
                 "src/test/resources/massa/Massa/automationExercise.xlsx",
-                "automationExercise", ct);
+                "automationExercise",
+                ct
+        );
 
         driver.get("https://automationexercise.com");
 
         product = new ProductsPage(driver, testData);
         login = new LoginPage(driver, testData);
-
     }
 
     @Given("I am on the products page")
     public void i_am_on_the_products_page() {
-
         product.openProductsPage();
     }
 
     @When("I select a product")
     public void i_select_a_product() {
-
         product.viewProductDetails();
     }
 
     @Then("the product details should be displayed")
     public void the_product_details_should_be_displayed() {
-
         product.verifyProductDetails();
     }
 
     @When("I enter a product name")
     public void i_enter_a_product_name() {
-
         product.searchProduct(testData.getStringOf("PRODUCT_1"));
     }
 
     @Then("the product should be displayed")
     public void the_product_should_be_displayed() {
-
         product.verifySearchedProduct();
     }
 
-
     @Then("the products should be displayed in the cart")
     public void the_products_should_be_displayed_in_the_cart() {
-
         product.verifyProductsInCart();
     }
 
     @Given("I am logged in")
     public void i_am_logged_in() {
-
         login.openLoginPage();
         login.login();
     }
 
     @When("I add the products to the cart")
     public void i_add_the_products_to_the_cart() {
-
         product.addProductsToCart();
     }
 
     @Given("I have products in the cart")
     public void i_have_products_in_the_cart() {
-
         product.openProductsPage();
         product.addProductsToCart();
     }
 
     @When("I remove a product from the cart")
     public void i_remove_a_product_from_the_cart() {
-
         product.removeProductFromCart();
     }
 
     @Then("the product should no longer be displayed in the cart")
     public void the_product_should_no_longer_be_displayed_in_the_cart() {
-
         product.verifyProductRemovedFromCart();
     }
 
     @Given("I am on the product details page")
     public void i_am_on_the_product_details_page() {
-
         product.openProductsPage();
         product.viewProductDetails();
     }
 
     @When("I submit a product review")
     public void i_submit_a_product_review() {
-
         product.writeReview();
     }
 
     @Then("a review confirmation message should be displayed")
     public void a_review_confirmation_message_should_be_displayed() {
-
         product.validateThankYouForYourReviewMessage();
     }
 
     @When("I proceed to checkout")
     public void i_proceed_to_checkout() {
-
         product.proceedToCheckout();
     }
 
     @Then("the delivery address should be displayed correctly")
     public void the_delivery_address_should_be_displayed_correctly() {
-
         product.validateDeliveryAddress();
     }
 
     @Then("the billing address should be displayed correctly")
     public void the_billing_address_should_be_displayed_correctly() {
-
         product.validateBillingAddress();
     }
 
@@ -211,8 +231,6 @@ public class ProductsStep {
     public void afterScenario() {
         if (driver != null) {
             driver.quit();
-
         }
     }
-
 }

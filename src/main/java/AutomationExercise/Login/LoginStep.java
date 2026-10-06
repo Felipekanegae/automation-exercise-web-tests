@@ -6,12 +6,13 @@ import io.cucumber.java.Scenario;
 import io.cucumber.java.en.Given;
 import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
+import io.github.bonigarcia.wdm.WebDriverManager;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
-import io.github.bonigarcia.wdm.WebDriverManager;
 import org.openqa.selenium.chrome.ChromeOptions;
 import org.openqa.selenium.devtools.DevTools;
 import org.openqa.selenium.devtools.v154.network.Network;
+import org.openqa.selenium.devtools.v154.network.model.RequestId;
 import testData.ExcelTestData;
 
 import java.util.Arrays;
@@ -21,7 +22,6 @@ import java.util.Optional;
 
 
 public class LoginStep {
-
 
     private LoginPage login;
     private WebDriver driver;
@@ -54,6 +54,7 @@ public class LoginStep {
         }
 
         driver = new ChromeDriver(options);
+
         DevTools devTools = ((ChromeDriver) driver).getDevTools();
         devTools.createSession();
 
@@ -63,7 +64,9 @@ public class LoginStep {
                         Optional.empty(),
                         Optional.empty(),
                         Optional.empty(),
-                        Optional.empty()));
+                        Optional.empty()
+                )
+        );
 
         devTools.send(
                 Network.setBlockedURLs(
@@ -71,10 +74,17 @@ public class LoginStep {
                         Optional.of(Arrays.asList(
                                 "*googlesyndication.com*",
                                 "*doubleclick.net*",
-                                "*googleads.g.doubleclick.net*"))));
+                                "*googleads.g.doubleclick.net*"
+                        ))
+                )
+        );
+
+        Map<RequestId, String> requestUrls = new HashMap<>();
 
         devTools.addListener(Network.requestWillBeSent(), request -> {
             String url = request.getRequest().getUrl();
+
+            requestUrls.put(request.getRequestId(), url);
 
             if (url.contains("google") ||
                     url.contains("doubleclick") ||
@@ -85,13 +95,41 @@ public class LoginStep {
             }
         });
 
+        devTools.addListener(Network.loadingFailed(), failed -> {
+            String url = requestUrls.get(failed.getRequestId());
+
+            if (url != null &&
+                    (url.contains("googlesyndication") ||
+                            url.contains("doubleclick") ||
+                            url.contains("adservice"))) {
+
+                System.out.println(
+                        "[FAILED] " +
+                                failed.getErrorText() +
+                                " | " + url
+                );
+            }
+        });
+
+        devTools.addListener(Network.responseReceived(), response -> {
+            String url = response.getResponse().getUrl();
+
+            System.out.println(
+                    "[RESPONSE] " +
+                            response.getResponse().getStatus() +
+                            " | " + url
+            );
+        });
+
         driver.manage().window().maximize();
 
         testData = new ExcelTestData();
 
         testData.loadTestData(
                 "src/test/resources/massa/Massa/automationExercise.xlsx",
-                "automationExercise", ct);
+                "automationExercise",
+                ct
+        );
 
         driver.get("https://automationexercise.com");
 
@@ -101,19 +139,16 @@ public class LoginStep {
     @Given("I am on the login page")
     public void i_am_on_the_login_page() {
         login.openLoginPage();
-
     }
 
     @When("I enter a valid email and password")
     public void i_enter_a_valid_email_and_password() {
         login.login();
-
     }
 
     @Then("the user should be logged in successfully")
     public void the_user_should_be_logged_in_successfully() {
         login.validateSuccessfulLogin();
-
     }
 
     @Given("I am logged in")
@@ -126,52 +161,42 @@ public class LoginStep {
     @When("I log out")
     public void i_log_out() {
         login.logout();
-
     }
 
     @Then("I should be logged out successfully")
     public void i_should_be_logged_out_successfully() {
         login.validateSuccessfulLogout();
-
     }
 
     @When("I enter invalid credentials")
     public void i_enter_invalid_credentials() {
         login.login();
-
     }
 
     @Then("an authentication error message should be displayed")
     public void an_authentication_error_message_should_be_displayed() {
         login.validateInvalidCredentialsMessage();
-
     }
 
     @Given("I am on the registration page")
     public void i_am_on_the_registration_page() {
         login.openLoginPage();
-
     }
 
     @When("I enter an email that is already registered")
     public void i_enter_an_email_that_is_already_registered() {
         login.registerNewUser();
-
     }
 
     @Then("an error message should be displayed")
     public void an_error_message_should_be_displayed() {
         login.validateEmailAlreadyRegisteredMessage();
-
     }
-
 
     @After
     public void afterScenario() {
         if (driver != null) {
             driver.quit();
-
         }
     }
-
 }
