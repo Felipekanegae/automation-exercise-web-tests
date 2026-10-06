@@ -6,6 +6,8 @@ import org.openqa.selenium.support.FindBy;
 import org.openqa.selenium.support.PageFactory;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
+import org.openqa.selenium.JavascriptExecutor;
+
 import org.testng.Assert;
 
 import java.time.Duration;
@@ -111,28 +113,25 @@ public class ProductsPage {
     }
 
     public void closeAdIfPresent() {
-        try {
-            List<WebElement> adFrames =
-                    driver.findElements(By.cssSelector("iframe[title='Advertisement']"));
 
-            for (WebElement frame : adFrames) {
+        List<WebElement> ads =
+                driver.findElements(By.cssSelector("iframe[title='Advertisement']"));
 
-                driver.switchTo().defaultContent();
-                driver.switchTo().frame(frame);
-
-                List<WebElement> closeButtons =
-                        driver.findElements(By.id("dismiss-button"));
-
-                if (!closeButtons.isEmpty()) {
-                    closeButtons.get(0).click();
-                    return;
-                }
-            }
-
-        } finally {
+        for (WebElement ad : ads) {
             driver.switchTo().defaultContent();
+            driver.switchTo().frame(ad);
 
+            List<WebElement> closeButtons =
+                    driver.findElements(By.id("dismiss-button-element"));
+
+            if (!closeButtons.isEmpty()) {
+                JavascriptExecutor js = (JavascriptExecutor) driver;
+                js.executeScript("arguments[0].click();", closeButtons.get(0));
+                break;
+            }
         }
+
+        driver.switchTo().defaultContent();
     }
 
     public void viewProductDetails() {
@@ -172,16 +171,17 @@ public class ProductsPage {
     }
 
     public void addProductsToCart() {
+
         searchProduct(testData.getStringOf("PRODUCT_1"));
         addProductToCart();
         searchProduct(testData.getStringOf("PRODUCT_2"));
         addProductToCart();
         searchProduct(testData.getStringOf("PRODUCT_3"));
         addProductToCart();
-
     }
 
     public void removeProductFromCart() {
+
         wait.until(ExpectedConditions.elementToBeClickable(cartButton));
         cartButton.click();
 
@@ -201,11 +201,10 @@ public class ProductsPage {
 
         wait.until(driver ->
                 cartProductNames.stream().noneMatch(product ->
-                                product.getText().contains(removedProductName)));
-
+                        product.getText().contains(removedProductName)));
     }
 
-    public void writeReview(){
+    public void writeReview() {
         wait.until(ExpectedConditions.visibilityOf(reviewField));
         fillReview();
         submitReviewButton.click();
@@ -327,7 +326,7 @@ public class ProductsPage {
         }
 
         Assert.assertFalse(product1Found, "Product should have been removed: " +
-                        expectedProduct1);
+                expectedProduct1);
         Assert.assertTrue(product2Found, "Product not found: " +
                 expectedProduct2);
         Assert.assertTrue(product3Found, "Product not found: " +
@@ -335,13 +334,13 @@ public class ProductsPage {
 
     }
 
-    public void validateThankYouForYourReviewMessage(){
+    public void validateThankYouForYourReviewMessage() {
         wait.until(ExpectedConditions.visibilityOf(thankYouForYourReviewMessage));
 
-        String message =  thankYouForYourReviewMessage.getText();
+        String message = thankYouForYourReviewMessage.getText();
         Assert.assertTrue(message.contains("Thank you for your review."));
 
-        System.out.println("[TEST] " +  message);
+        System.out.println("[TEST] " + message);
     }
 
     public void validateDeliveryAddress() {
@@ -354,7 +353,7 @@ public class ProductsPage {
 
     }
 
-    private void validateAddress(WebElement addressBox){
+    private void validateAddress(WebElement addressBox) {
         wait.until(ExpectedConditions.visibilityOf(addressBox));
 
         String address = addressBox.getText();
