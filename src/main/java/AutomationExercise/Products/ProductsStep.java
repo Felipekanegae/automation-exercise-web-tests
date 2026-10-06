@@ -40,7 +40,7 @@ public class ProductsStep {
 
         testData = new ExcelTestData();
 
-        testData.carregarMassa(
+        testData.loadTestData(
                 "src/test/resources/massa/Massa/automationExercise.xlsx",
                 "automationExercise",
                 ct

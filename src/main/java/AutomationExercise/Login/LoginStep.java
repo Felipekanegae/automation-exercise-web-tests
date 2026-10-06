@@ -38,7 +38,7 @@ public class LoginStep {
 
         testData = new ExcelTestData();
 
-        testData.carregarMassa(
+        testData.loadTestData(
                 "src/test/resources/massa/Massa/automationExercise.xlsx",
                 "automationExercise", ct);
 
@@ -50,6 +50,7 @@ public class LoginStep {
     @Given("I am on the login page")
     public void i_am_on_the_login_page() {
         login.openLoginPage();
+
     }
 
     @When("I enter a valid email and password")
